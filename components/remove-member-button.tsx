@@ -29,7 +29,7 @@ export default function RemoveMemberButton({
         <button
             onClick={handleRemove}
             disabled={isLoading}
-            className="text-destructive hover:text-destructive/80 p-2 rounded-md hover:bg-destructive/10 transition-colors disabled:opacity-50"
+            className="text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-md transition-colors disabled:opacity-50"
             title="Remove member"
         >
             {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}

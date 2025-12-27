@@ -22,7 +22,6 @@ export default function AddMemberModal({
     const [isLoading, setIsLoading] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState<string>("");
 
-    const availableUsers = users.filter((u) => u.teamId !== teamId);
 
     async function handleAdd() {
         if (!selectedUserId) return;
@@ -70,14 +69,23 @@ export default function AddMemberModal({
                                     onChange={(e) => setSelectedUserId(e.target.value)}
                                 >
                                     <option value="">Select a user...</option>
-                                    {availableUsers.map((user) => (
-                                        <option key={user.id} value={user.id}>
-                                            {user.name} {user.teamId ? `(Currently in another team)` : ""}
-                                        </option>
-                                    ))}
+                                    {users.map((user) => {
+                                        const isCurrentMember = user.teamId === teamId;
+                                        return (
+                                            <option
+                                                key={user.id}
+                                                value={user.id}
+                                                disabled={isCurrentMember}
+                                            >
+                                                {user.name}
+                                                {isCurrentMember ? " (Already in team)" :
+                                                    user.teamId ? " (Currently in another team)" : ""}
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                                 <p className="text-xs text-muted-foreground">
-                                    Users currently in other teams will be moved to this team.
+                                    Select a user to add to this team. Users from other teams will be moved.
                                 </p>
                             </div>
 

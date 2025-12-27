@@ -54,11 +54,11 @@ export default async function TeamDetailsPage({ params }: { params: Promise<{ te
                 </div>
 
                 {/* Members Section */}
-                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xl">
+                    <div className="px-6 py-4 border-b border-border flex items-center gap-2 bg-muted/40">
                         <Users size={20} className="text-primary" />
-                        <h2 className="font-semibold text-lg">Team Members</h2>
-                        <span className="ml-auto bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <h2 className="font-bold text-lg">Team Members</h2>
+                        <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                             {team.users.length}
                         </span>
                     </div>
@@ -72,14 +72,14 @@ export default async function TeamDetailsPage({ params }: { params: Promise<{ te
                             team.users.map((member) => (
                                 <div key={member.id} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
+                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-base">
                                             {member.name.charAt(0).toUpperCase()}
                                         </div>
                                         <div>
-                                            <div className="font-medium">{member.name}</div>
-                                            <div className="text-xs text-muted-foreground">{member.email}</div>
+                                            <div className="font-semibold text-foreground">{member.name}</div>
+                                            <div className="text-sm text-muted-foreground">{member.email}</div>
                                         </div>
-                                        <div className="ml-2 px-2 py-0.5 rounded text-xs bg-muted text-muted-foreground uppercase tracking-wider">
+                                        <div className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground uppercase tracking-wider border border-border">
                                             {member.role}
                                         </div>
                                     </div>
@@ -93,11 +93,11 @@ export default async function TeamDetailsPage({ params }: { params: Promise<{ te
                 </div>
 
                 {/* Requests Section */}
-                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xl">
+                    <div className="px-6 py-4 border-b border-border flex items-center gap-2 bg-muted/40">
                         <FileText size={20} className="text-primary" />
-                        <h2 className="font-semibold text-lg">Assigned Requests</h2>
-                        <span className="ml-auto bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <h2 className="font-bold text-lg">Assigned Requests</h2>
+                        <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                             {team.requests.length}
                         </span>
                     </div>

@@ -89,7 +89,7 @@ export default function CreateTeamModal({ companyId, companyName }: { companyId:
                                         name="name"
                                         required
                                         placeholder="e.g. Maintenance A"
-                                        className="w-full bg-muted border border-border rounded px-3 py-2 outline-none focus:border-primary"
+                                        className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground focus:ring-2 focus:ring-primary/20 outline-none"
                                     />
                                 </div>
 
