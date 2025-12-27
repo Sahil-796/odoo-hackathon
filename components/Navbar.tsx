@@ -79,7 +79,7 @@ export default function Navbar({ user }: NavbarProps) {
                                 <form action={logout}>
                                     <button
                                         type="submit"
-                                        className="flex items-center gap-2 px-3 py-2 text-destructive hover:text-white hover:bg-destructive border border-destructive/20 hover:border-destructive rounded-md transition-all duration-200 group"
+                                        className="flex items-center gap-2 px-3 py-2 text-destructive hover:text-white hover:bg-destructive border border-destructive/20 hover:border-destructive rounded-md transition-all duration-200 group cursor-pointer"
                                         title="Sign out"
                                     >
                                         <LogOut size={16} className="group-hover:stroke-current" />
