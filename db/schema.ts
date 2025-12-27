@@ -1,8 +1,11 @@
 import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { relations, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 
+
 export type WorkCenter = InferSelectModel<typeof workCenters>;
 export type NewWorkCenter = InferInsertModel<typeof workCenters>;
+export type User = InferSelectModel<typeof users>;
+export type NewUser = InferInsertModel<typeof users>;
 
 // --- ENUMS (Strictly defined from Source 27-29, 55) ---
 // Defining these ensures your frontend dropdowns match the DB exactly.
@@ -32,6 +35,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
+  password: text("password").notNull(),
   role: userRoleEnum("role").default("technician"),
   teamId: integer("team_id").references(() => teams.id), // Links user to a specialized team
   avatarUrl: text("avatar_url"), // For the Kanban visual indicator [cite: 59]
