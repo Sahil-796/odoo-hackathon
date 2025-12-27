@@ -37,12 +37,17 @@ export async function signup(prevState: any, formData: FormData) {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const role = formData.get("role") as "technician" | "manager";
-    const companyName = formData.get("company") as string;
+    const companyName = formData.get("company") as string; // Name for new company
+    const companyIdStr = formData.get("companyId") as string; // ID for existing company
     const password = formData.get("password") as string;
     const rePassword = formData.get("rePassword") as string;
 
-    if (!name || !email || !role || !companyName || !password || !rePassword) {
+    if (!name || !email || !role || !password || !rePassword) {
         return { error: "All fields are required" };
+    }
+
+    if (!companyIdStr && !companyName) {
+        return { error: "Please select or create a company" };
     }
 
     if (password !== rePassword) {
@@ -61,18 +66,34 @@ export async function signup(prevState: any, formData: FormData) {
 
         // Check or Create Company
         let companyId: number;
-        const existingCompany = await db.query.companies.findFirst({
-            where: eq(companies.name, companyName),
-        });
 
-        if (existingCompany) {
-            companyId = existingCompany.id;
+        if (companyIdStr && companyIdStr !== "new") {
+            const parsedId = parseInt(companyIdStr);
+            const existingCompanyById = await db.query.companies.findFirst({
+                where: eq(companies.id, parsedId)
+            });
+
+            if (!existingCompanyById) {
+                return { error: "Invalid Company Selected" };
+            }
+            companyId = parsedId;
         } else {
-            const [newCompany] = await db
-                .insert(companies)
-                .values({ name: companyName })
-                .returning({ id: companies.id });
-            companyId = newCompany.id;
+            // Logic for creating/finding by name (if user selected "Create new" and typed a name)
+            const existingCompany = await db.query.companies.findFirst({
+                where: eq(companies.name, companyName),
+            });
+
+            if (existingCompany) {
+                // If they typed a name that exists, join it? Or error? 
+                // Let's assume joining is fine if name matches exact
+                companyId = existingCompany.id;
+            } else {
+                const [newCompany] = await db
+                    .insert(companies)
+                    .values({ name: companyName })
+                    .returning({ id: companies.id });
+                companyId = newCompany.id;
+            }
         }
 
         // Create User
