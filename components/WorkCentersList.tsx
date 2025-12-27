@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Plus, Save, X } from 'lucide-react';
+import { Loader2, Plus, Save, X } from 'lucide-react';
 import { WorkCenter } from '@/db/schema';
 import WorkCenterDialog from './WorkCenterDialog';
 
@@ -86,7 +86,13 @@ export default function WorkCentersList() {
 
 
 
-    if (loading) return <div className="p-6">Loading...</div>;
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
