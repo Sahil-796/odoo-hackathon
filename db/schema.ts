@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // --- ENUMS (Strictly defined from Source 27-29, 55) ---
@@ -14,13 +14,14 @@ export const requestStageEnum = pgEnum("request_stage", [
   "scrap",
 ]);
 export const userRoleEnum = pgEnum("user_role", ["technician", "manager"]);
-export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "location", "other"]);
+export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "work_center", "other"]);
 export const equipmentUsedByEnum = pgEnum("equipment_used_by", ["employee", "department", "other"]);
 
 // --- 1. TEAMS (Source 19-24) ---
 export const teams = pgTable("teams", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // e.g., "Mechanics", "IT Support"
+  companyId: integer("company_id").references(() => companies.id),
 });
 
 // --- 2. USERS (Source 22-23) ---
@@ -31,12 +32,26 @@ export const users = pgTable("users", {
   role: userRoleEnum("role").default("technician"),
   teamId: integer("team_id").references(() => teams.id), // Links user to a specialized team
   avatarUrl: text("avatar_url"), // For the Kanban visual indicator [cite: 59]
+  companyId: integer("company_id").references(() => companies.id), // Link user to a company
 });
 
 // --- 2.5 COMPANIES (Source: UI) ---
 export const companies = pgTable("companies", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+});
+
+// --- 2.8 WORK CENTERS (Source: User Request) ---
+export const workCenters = pgTable("work_centers", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  code: text("code"),
+  tag: text("tag"),
+  costperhour: doublePrecision("cost_per_hour"),
+  capacity: doublePrecision("capacity"),
+  timeEfficiency: doublePrecision("time_efficiency"),
+  oeeTarget: doublePrecision("oee_target"),
+  alternativeWorkCenterId: integer("alternative_work_center_id").references((): AnyPgColumn => workCenters.id),
 });
 
 // --- 3. EQUIPMENT (Source 7-18) ---
@@ -75,6 +90,7 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
   // Scoping
   maintenanceScope: maintenanceScopeEnum("maintenance_scope").default("equipment"),
   equipmentId: integer("equipment_id").references(() => equipment.id),
+  workCenterId: integer("work_center_id").references(() => workCenters.id), // Added for "Work Center" scope
   category: text("category"),
 
   // Details
@@ -104,10 +120,25 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
 
 // --- RELATIONS (Crucial for "Smart Buttons" & Joins) ---
 
-export const teamsRelations = relations(teams, ({ many }) => ({
+export const teamsRelations = relations(teams, ({ many, one }) => ({
   users: many(users),
   equipment: many(equipment),
   requests: many(maintenanceRequests),
+  company: one(companies, {
+    fields: [teams.companyId],
+    references: [companies.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ one }) => ({
+  team: one(teams, {
+    fields: [users.teamId],
+    references: [teams.id],
+  }),
+  company: one(companies, {
+    fields: [users.companyId],
+    references: [companies.id],
+  }),
 }));
 
 export const equipmentRelations = relations(equipment, ({ one, many }) => ({
@@ -138,6 +169,10 @@ export const requestsRelations = relations(maintenanceRequests, ({ one }) => ({
   company: one(companies, {
     fields: [maintenanceRequests.companyId],
     references: [companies.id],
+  }),
+  workCenter: one(workCenters, {
+    fields: [maintenanceRequests.workCenterId],
+    references: [workCenters.id],
   }),
 }));
 
