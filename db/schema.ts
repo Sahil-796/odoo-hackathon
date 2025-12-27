@@ -35,7 +35,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  password: text("password").notNull(),
+  password: text("password"),
   role: userRoleEnum("role").default("technician"),
   teamId: integer("team_id").references(() => teams.id), // Links user to a specialized team
   avatarUrl: text("avatar_url"), // For the Kanban visual indicator [cite: 59]
