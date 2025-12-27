@@ -28,3 +28,19 @@ export async function getTeams(companyId: number) {
 export async function getCompanies() {
     return await db.select().from(companies);
 }
+
+export async function getTeam(teamId: number) {
+    return await db.query.teams.findFirst({
+        where: eq(teams.id, teamId),
+        with: {
+            users: true,
+            company: true,
+            requests: {
+                with: {
+                    equipment: true,
+                    technician: true,
+                }
+            }
+        },
+    });
+}

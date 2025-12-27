@@ -1,6 +1,7 @@
 import { getCompanies, getTeams } from "@/db/teams";
 import { getCurrentUser } from "@/utils/auth";
 import CreateTeamModal from "../../components/create-team-modal";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,7 @@ export default async function TeamsPage() {
                                 <tr>
                                     <th className="px-6 py-4 border-b border-border">Team Name</th>
                                     <th className="px-6 py-4 border-b border-border">Team Members</th>
+                                    <th className="px-6 py-4 border-b border-border text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
@@ -70,18 +72,27 @@ export default async function TeamsPage() {
                                 ) : (
                                     allTeams.map((team) => (
                                         <tr key={team.id} className="hover:bg-muted/30 transition-colors group">
-                                            <td className="px-6 py-4 font-medium text-foreground">{team.name}</td>
+                                            <td className="px-6 py-4 font-medium text-foreground">
+                                                <Link href={`/teams/${team.id}`} className="hover:underline text-[#5ad3a1]">
+                                                    {team.name}
+                                                </Link>
+                                            </td>
                                             <td className="px-6 py-4">
                                                 {team.users.length > 0 ? (
                                                     <div className="flex flex-wrap gap-2">
-                                                        {team.users.map((user) => (
+                                                        {team.users.slice(0, 3).map((user) => (
                                                             <span
                                                                 key={user.id}
-                                                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary ring-1 ring-inset ring-primary/20"
+                                                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary-foreground ring-1 ring-inset ring-primary/30"
                                                             >
                                                                 {user.name}
                                                             </span>
                                                         ))}
+                                                        {team.users.length > 3 && (
+                                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground ring-1 ring-inset ring-border">
+                                                                +{team.users.length - 3} more
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground italic">No members</span>
