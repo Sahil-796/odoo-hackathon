@@ -23,7 +23,7 @@ export default function Navbar() {
             <Link href="#" className="hover:text-primary transition-colors">
                 Maintenance Calendar
             </Link>
-            <Link href="#" className="hover:text-primary transition-colors">
+            <Link href="/equipments" className={`${isActive('/work-centers')} transition-colors`}>
                 Equipment
             </Link>
             <Link href="#" className="hover:text-primary transition-colors">
