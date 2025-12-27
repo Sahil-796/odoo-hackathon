@@ -18,89 +18,73 @@ import {
 export default function ManagerDashboard({ requests }: { requests: any[] }) {
 
     // Calculate specific KPIs based on real data
-    const stats = useMemo(() => {
-        const total = requests.length;
-        const pending = requests.filter(r => r.stage !== 'repaired' && r.stage !== 'scrap').length;
-        // Assuming 'priority' > 0 is critical/high or map from string if enum changed (schema has integer priority)
-        // Let's assume priority > 1 is critical
-        const critical = requests.filter(r => r.priority > 1).length;
 
-        // Calculate average completion time? (Mock for now as backend calculation is complex)
-        const avgTime = "4.2h";
-
-        return [
-            {
-                title: "Total Requests",
-                value: total.toString(),
-                change: "+12%", // Mock
-                trend: "up",
-                icon: BarChart3,
-                color: "text-blue-600",
-                bg: "bg-blue-50",
-            },
-            {
-                title: "Pending Tasks",
-                value: pending.toString(),
-                change: "-5%", // Mock
-                trend: "down",
-                icon: Clock,
-                color: "text-amber-600",
-                bg: "bg-amber-50",
-            },
-            {
-                title: "Critical Issues",
-                value: critical.toString(),
-                change: "+2%", // Mock
-                trend: "up",
-                icon: AlertTriangle,
-                color: "text-red-600",
-                bg: "bg-red-50",
-            },
-            {
-                title: "Avg. Resolution",
-                value: avgTime,
-                change: "-18%", // Mock
-                trend: "down",
-                icon: CheckCircle2,
-                color: "text-emerald-600",
-                bg: "bg-emerald-50",
-            },
-        ];
-    }, [requests]);
 
     return (
         <div className="space-y-6 p-6">
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, index) => (
-                    <div
-                        key={index}
-                        className="bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
-                    >
-                        <div className="flex items-center justify-between">
-                            <div className={`p-3 rounded-lg ${stat.bg}`}>
-                                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                            </div>
-                            <span
-                                className={`text-sm font-medium px-2.5 py-1 rounded-full ${stat.trend === "up"
-                                    ? "bg-emerald-100 text-emerald-700"
-                                    : "bg-red-100 text-red-700"
-                                    }`}
-                            >
-                                {stat.change}
-                            </span>
-                        </div>
-                        <div className="mt-4">
-                            <h3 className="text-sm font-medium text-muted-foreground">
-                                {stat.title}
-                            </h3>
-                            <p className="text-2xl font-bold text-foreground mt-1">
-                                {stat.value}
-                            </p>
-                        </div>
+            {/* Dashboard Graph: Requests per Equipment Category */}
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-foreground mb-6">
+                    Requests per Equipment Category
+                </h3>
+
+                {Object.keys(requests.reduce((acc, r) => {
+                    const cat = r.equipment?.category || "Uncategorized";
+                    acc[cat] = (acc[cat] || 0) + 1;
+                    return acc;
+                }, {} as Record<string, number>)).length === 0 ? (
+                    <div className="h-48 flex items-center justify-center text-muted-foreground border border-dashed border-border rounded-lg">
+                        No data available to chart.
                     </div>
-                ))}
+                ) : (
+                    <div className="flex items-end gap-8 px-4 pb-2">
+                        {Object.entries(requests.reduce((acc, r) => {
+                            const cat = r.equipment?.category || "Uncategorized";
+                            acc[cat] = (acc[cat] || 0) + 1;
+                            return acc;
+                        }, {} as Record<string, number>))
+                            .sort(([, a], [, b]) => (b as number) - (a as number)) // Sort descending
+                            .map(([category, count], idx) => {
+                                const countNum = count as number;
+                                // Find max for scaling
+                                const max = Math.max(...Object.values(requests.reduce((acc, r) => {
+                                    const cat = r.equipment?.category || "Uncategorized";
+                                    acc[cat] = (acc[cat] || 0) + 1;
+                                    return acc;
+                                }, {} as Record<string, number>)) as number[]);
+
+                                const heightPercentage = max > 0 ? (countNum / max) * 100 : 0;
+                                const colors = ["bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-red-500", "bg-purple-500"];
+
+                                return (
+                                    <div key={category} className="flex-1 flex flex-col items-center gap-2 group">
+                                        <div className="h-48 w-full flex items-end justify-center relative">
+                                            {/* Background Track (optional) */}
+                                            <div className="absolute inset-0 bg-muted/20 rounded-t-lg" />
+
+                                            <div
+                                                style={{ height: `${heightPercentage}%` }}
+                                                className={`w-full max-w-[60px] rounded-t-lg ${colors[idx % colors.length]} opacity-80 group-hover:opacity-100 transition-all duration-300 relative`}
+                                            >
+                                                {/* Tooltip */}
+                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-md whitespace-nowrap z-10 pointer-events-none">
+                                                    {countNum} Requests
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="text-center h-10">
+                                            <span className="block text-sm font-medium text-foreground truncate max-w-[100px]" title={category}>
+                                                {category}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground">{countNum}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </div>
+                )}
             </div>
 
             {/* Main Content Grid */}
