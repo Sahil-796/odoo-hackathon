@@ -1,5 +1,8 @@
 import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
+
+export type WorkCenter = InferSelectModel<typeof workCenters>;
+export type NewWorkCenter = InferInsertModel<typeof workCenters>;
 
 // --- ENUMS (Strictly defined from Source 27-29, 55) ---
 // Defining these ensures your frontend dropdowns match the DB exactly.
