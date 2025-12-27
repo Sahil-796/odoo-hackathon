@@ -10,11 +10,11 @@ export const mockCompanies = [
 ];
 
 export const mockUsers = [
-    { id: 1, name: "Mitchell Admin", email: "admin@example.com", role: "manager", teamId: 1, avatarUrl: null },
-    { id: 2, name: "Aka Foster", email: "foster@example.com", role: "technician", teamId: 1, avatarUrl: null },
-    { id: 3, name: "John Doe", email: "john@example.com", role: "technician", teamId: 2, avatarUrl: null },
-    { id: 4, name: "Marc Demo", email: "marc@example.com", role: "technician", teamId: 1, avatarUrl: null },
-    { id: 5, name: "Sarah Smith", email: "sarah@example.com", role: "manager", teamId: 2, avatarUrl: null },
+    { id: 1, name: "Mitchell Admin", email: "admin@example.com", role: "manager", avatarUrl: null },
+    { id: 2, name: "Aka Foster", email: "foster@example.com", role: "technician", avatarUrl: null },
+    { id: 3, name: "John Doe", email: "john@example.com", role: "technician", avatarUrl: null },
+    { id: 4, name: "Marc Demo", email: "marc@example.com", role: "technician", avatarUrl: null },
+    { id: 5, name: "Sarah Smith", email: "sarah@example.com", role: "manager", avatarUrl: null },
 ];
 
 export const mockWorkCenters = [

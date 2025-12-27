@@ -1,5 +1,6 @@
 import DashboardClient from '@/components/DashboardClient';
 import { getCurrentUser } from '@/utils/auth';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,13 +10,7 @@ export default async function DashboardPage() {
     const user = await getCurrentUser();
 
     if (!user) {
-        return (
-            <div className="p-8">
-                <div className="bg-destructive/10 text-destructive p-4 rounded text-center">
-                    User authentication failed. Please check database seeding.
-                </div>
-            </div>
-        );
+        return redirect("/login");
     }
 
     // 2. Pass User to Client Component

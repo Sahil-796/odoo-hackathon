@@ -1,13 +1,19 @@
 'use server'
 
 import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { users, usersToTeams } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
+import { getCurrentUser } from "@/utils/auth";
 import { revalidatePath } from "next/cache";
 
 export async function addMemberToTeam(userId: number, teamId: number) {
     try {
-        await db.update(users).set({ teamId }).where(eq(users.id, userId));
+        const user = await getCurrentUser();
+        if (!user || user.role !== "manager") {
+            return { success: false, error: "Unauthorized: Only managers can add members." };
+        }
+
+        await db.insert(usersToTeams).values({ userId, teamId }).onConflictDoNothing();
         revalidatePath("/teams");
         revalidatePath(`/teams/${teamId}`);
         return { success: true };
@@ -19,7 +25,12 @@ export async function addMemberToTeam(userId: number, teamId: number) {
 
 export async function removeMemberFromTeam(userId: number, teamId: number) {
     try {
-        await db.update(users).set({ teamId: null }).where(eq(users.id, userId));
+        const user = await getCurrentUser();
+        if (!user || user.role !== "manager") {
+            return { success: false, error: "Unauthorized: Only managers can remove members." };
+        }
+
+        await db.delete(usersToTeams).where(and(eq(usersToTeams.userId, userId), eq(usersToTeams.teamId, teamId)));
         revalidatePath("/teams");
         revalidatePath(`/teams/${teamId}`);
         return { success: true };

@@ -12,13 +12,23 @@ INSERT INTO companies (id, name) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Users
-INSERT INTO users (id, name, email, role, team_id, avatar_url) VALUES 
-(1, 'Mitchell Admin', 'admin@example.com', 'manager', 1, NULL),
-(2, 'Aka Foster', 'foster@example.com', 'technician', 1, NULL),
-(3, 'John Doe', 'john@example.com', 'technician', 2, NULL),
-(4, 'Marc Demo', 'marc@example.com', 'technician', 1, NULL),
-(5, 'Sarah Smith', 'sarah@example.com', 'manager', 2, NULL)
+-- Users
+INSERT INTO users (id, name, email, role, avatar_url, company_id) VALUES 
+(1, 'Mitchell Admin', 'admin@example.com', 'manager', NULL, 1),
+(2, 'Aka Foster', 'foster@example.com', 'technician', NULL, 1),
+(3, 'John Doe', 'john@example.com', 'technician', NULL, 2),
+(4, 'Marc Demo', 'marc@example.com', 'technician', NULL, 1),
+(5, 'Sarah Smith', 'sarah@example.com', 'manager', NULL, 2)
 ON CONFLICT (id) DO NOTHING;
+
+-- Users Teams
+INSERT INTO users_to_teams (user_id, team_id) VALUES
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 1),
+(5, 2)
+ON CONFLICT (user_id, team_id) DO NOTHING;
 
 -- Work Centers
 INSERT INTO work_centers (id, name, code, tag, cost_per_hour, capacity, time_efficiency, oee_target, alternative_work_center_id) VALUES

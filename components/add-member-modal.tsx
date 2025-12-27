@@ -8,7 +8,7 @@ type User = {
     id: number;
     name: string;
     email: string;
-    teamId: number | null;
+    teams: { team: { id: number; name: string } | null }[];
 };
 
 export default function AddMemberModal({
@@ -70,7 +70,8 @@ export default function AddMemberModal({
                                 >
                                     <option value="">Select a user...</option>
                                     {users.map((user) => {
-                                        const isCurrentMember = user.teamId === teamId;
+                                        const isCurrentMember = user.teams.some(t => t.team?.id === teamId);
+                                        const teamNames = user.teams.map(t => t.team?.name).filter(Boolean).join(", ");
                                         return (
                                             <option
                                                 key={user.id}
@@ -79,7 +80,7 @@ export default function AddMemberModal({
                                             >
                                                 {user.name}
                                                 {isCurrentMember ? " (Already in team)" :
-                                                    user.teamId ? " (Currently in another team)" : ""}
+                                                    teamNames ? ` (In: ${teamNames})` : ""}
                                             </option>
                                         );
                                     })}

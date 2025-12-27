@@ -15,6 +15,13 @@
       "when": 1766822786307,
       "tag": "0001_noisy_drax",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766823030066,
+      "tag": "0002_heavy_roulette",
+      "breakpoints": true
     }
   ]
 }

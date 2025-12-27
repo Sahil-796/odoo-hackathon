@@ -2,9 +2,13 @@ import { db } from '@/db';
 import { workCenters } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
+import { getSessionId } from '@/lib/auth';
 
 export async function GET() {
     try {
+        const userId = await getSessionId();
+        if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const allWorkCenters = await db.select().from(workCenters);
         return NextResponse.json(allWorkCenters);
     } catch (error) {
@@ -15,6 +19,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
+        const userId = await getSessionId();
+        if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const body = await request.json();
 
         // Validate or clean body if necessary, for now assuming it matches schema or letting DB throw
@@ -38,6 +45,9 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
     try {
+        const userId = await getSessionId();
+        if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const body = await request.json();
 
         if (!body.id) {

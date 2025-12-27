@@ -1,6 +1,9 @@
 import { getUserById } from "@/db/users";
 
+import { getSessionId } from "@/lib/auth";
+
 export async function getCurrentUser() {
-    // Hardcoded for now as per existing pattern
-    return await getUserById(1);
+    const userId = await getSessionId();
+    if (!userId) return null;
+    return await getUserById(userId);
 }
