@@ -91,13 +91,7 @@ export default function WorkCentersList() {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
 
-            {/* Navigation (Simplified for this component, ideally shared) */}
-            <nav className="flex items-center gap-6 px-6 py-3 border-b border-border text-sm font-medium text-muted-foreground">
-                <div className="text-foreground font-bold text-lg mr-4">Maintenance</div>
-                <a href="/dashboard" className="hover:text-primary transition-colors">Dashboard</a>
-                <a href="#" className="text-foreground hover:text-primary transition-colors">Work Centers</a>
-                {/* Other links omitted for brevity in this focused view */}
-            </nav>
+
 
             <main className="p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
