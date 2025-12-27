@@ -14,7 +14,7 @@ export const requestStageEnum = pgEnum("request_stage", [
   "scrap",
 ]);
 export const userRoleEnum = pgEnum("user_role", ["technician", "manager"]);
-export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "location", "other"]);
+export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "work_center", "other"]);
 export const equipmentUsedByEnum = pgEnum("equipment_used_by", ["employee", "department", "other"]);
 
 // --- 1. TEAMS (Source 19-24) ---
