@@ -4,38 +4,25 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen grid lg:grid-cols-2">
-            {/* Left side: Form */}
-            <div className="flex items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-950">
-                <div className="w-full max-w-[400px] space-y-6">
-                    {children}
-                </div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+            {/* Background Gradients */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-500/20 via-background to-background" />
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none"></div>
 
-            {/* Right side: Branding/Image */}
-            <div className="hidden lg:flex flex-col justify-center p-12 bg-zinc-900 text-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20" />
-                <div className="relative z-10 space-y-6 max-w-lg">
-                    <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="w-6 h-6 text-zinc-900"
-                        >
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                        </svg>
+            {/* Floating Orbs/Accents for depth */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -z-10 animate-pulse delay-1000" />
+
+            {/* Content */}
+            <div className="w-full max-w-[440px] relative z-10 pb-8">
+                <div className="flex justify-center mb-8">
+                    <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
+                        <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">GearGuard</span>
                     </div>
-                    <h1 className="text-4xl font-bold tracking-tight">
-                        Manage your maintenance team with confidence.
-                    </h1>
-                    <p className="text-zinc-400 text-lg">
-                        Streamline operations, track work orders, and boost efficiency with our comprehensive maintenance management solution.
-                    </p>
+                </div>
+                {children}
+                <div className="mt-8 text-center text-xs text-muted-foreground">
+                    © 2024 GearGuard. All rights reserved.
                 </div>
             </div>
         </div>
