@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import { Plus, Save, X } from 'lucide-react';
 import { WorkCenter } from '@/db/schema';
+import WorkCenterDialog from './WorkCenterDialog';
 
 export default function WorkCentersList() {
     const [workCenters, setWorkCenters] = useState<WorkCenter[]>([]); // Initialize empty, will fetch
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editForm, setEditForm] = useState<Partial<WorkCenter>>({});
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     React.useEffect(() => {
         fetchWorkCenters();
@@ -42,27 +44,7 @@ export default function WorkCentersList() {
 
     const handleSaveClick = async () => {
         try {
-            let savedData: WorkCenter;
-            // Check if it's a new item (temporary ID, assuming new IDs are negative or we track it)
-            // Actually, we used a logic of max + 1. But for API, we should treat "create" differently.
-            // Let's assume if the ID is just generated on client for display, we treat it as new if it's not in DB.
-            // A better way for this hybrid approach: check if editingId is the one we just created.
-            // But simplifying: If id is a placeholder (e.g. created by us now), we POST.
-            // Since we are moving to API, let's use -1 for new items.
-
-            if (editingId === -1) {
-                // Create
-                const response = await fetch('/api/work-centers', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(editForm),
-                });
-                if (!response.ok) throw new Error('Failed to create');
-                savedData = await response.json();
-
-                // Replace the temporary row with real data
-                setWorkCenters(prev => prev.map(w => w.id === -1 ? savedData : w));
-            } else {
+            if (editingId) {
                 // Update
                 const response = await fetch('/api/work-centers', {
                     method: 'PUT',
@@ -70,7 +52,7 @@ export default function WorkCentersList() {
                     body: JSON.stringify(editForm),
                 });
                 if (!response.ok) throw new Error('Failed to update');
-                savedData = await response.json();
+                const savedData = await response.json();
 
                 // Update the row
                 setWorkCenters(prev => prev.map(w => w.id === savedData.id ? savedData : w));
@@ -80,7 +62,6 @@ export default function WorkCentersList() {
             setEditForm({});
         } catch (error) {
             console.error('Error saving work center:', error);
-            // Optionally show user feedback
         }
     };
 
@@ -89,25 +70,21 @@ export default function WorkCentersList() {
     };
 
     const handleCreateClick = () => {
-        // Use -1 as temporary ID for new item
-        const newId = -1;
-        const newWorkCenter = {
-            id: newId,
-            name: "New Work Center",
-            code: "WC-NEW",
-            tag: "General",
-            costperhour: 0.0,
-            capacity: 100,
-            timeEfficiency: 100.0,
-            oeeTarget: 80.0,
-            alternativeWorkCenterId: null,
-        };
-
-        setWorkCenters([...workCenters, newWorkCenter]);
-        // Immediately start editing the new row
-        setEditingId(newId);
-        setEditForm(newWorkCenter);
+        setIsDialogOpen(true);
     };
+
+    const handleCreateSave = async (data: Partial<WorkCenter>) => {
+        const response = await fetch('/api/work-centers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to create');
+        const savedData = await response.json();
+        setWorkCenters([...workCenters, savedData]);
+    };
+
+
 
     if (loading) return <div className="p-6">Loading...</div>;
 
@@ -134,6 +111,13 @@ export default function WorkCentersList() {
                             <Plus size={16} /> Create
                         </button>
                     </div>
+
+                    <WorkCenterDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        onSave={handleCreateSave}
+                        existingWorkCenters={workCenters}
+                    />
                 </div>
 
                 <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xl">
