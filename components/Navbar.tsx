@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { User } from '@/db/schema';
 import { logout } from '@/app/(auth)/actions';
-import { LogOut, User as UserIcon, LayoutDashboard, Settings, Wrench, Users, Calendar, BarChart3, Factory } from 'lucide-react';
+import { LogOut, User as UserIcon, LayoutDashboard, Wrench, Users, Factory, Calendar, BarChart3, Monitor } from 'lucide-react';
 
 interface NavbarProps {
     user: User | null;
@@ -42,22 +42,35 @@ export default function Navbar({ user }: NavbarProps) {
 
                     {/* Center: Navigation Links */}
                     {user && (
+                        // Imports updated at top of file separately if needed, but here replacing the links block.
                         <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1 p-1 bg-secondary/30 rounded-md border border-border/40 backdrop-blur-sm">
-                            <Link href="/dashboard" className={`${linkBaseClass} ${pathname === '/dashboard' ? activeClass : inactiveClass}`}>
+                            <Link href="/dashboard" className={`${linkBaseClass} ${pathname === '/dashboard' ? activeClass : inactiveClass}`} title="Dashboard">
                                 <LayoutDashboard size={16} />
-                                <span>Dashboard</span>
+                                <span className="hidden lg:inline">Dashboard</span>
                             </Link>
-                            <Link href="/work-centers" className={`${linkBaseClass} ${pathname === '/work-centers' ? activeClass : inactiveClass}`}>
-                                <Factory size={16} />
-                                <span>Work Centers</span>
-                            </Link>
-                            <Link href="/teams" className={`${linkBaseClass} ${pathname === '/teams' ? activeClass : inactiveClass}`}>
-                                <Users size={16} />
-                                <span>Teams</span>
-                            </Link>
-                            <Link href="/equipments" className={`${linkBaseClass} ${pathname === '/equipments' ? activeClass : inactiveClass}`}>
+                            <Link href="/maintenance-requests" className={`${linkBaseClass} ${pathname === '/maintenance-requests' ? activeClass : inactiveClass}`} title="Requests">
                                 <Wrench size={16} />
-                                <span>Equipment</span>
+                                <span className="hidden lg:inline">Requests</span>
+                            </Link>
+                            <Link href="/calendar" className={`${linkBaseClass} ${pathname === '/calendar' ? activeClass : inactiveClass}`} title="Calendar">
+                                <Calendar size={16} />
+                                <span className="hidden lg:inline">Calendar</span>
+                            </Link>
+                            <Link href="/work-centers" className={`${linkBaseClass} ${pathname === '/work-centers' ? activeClass : inactiveClass}`} title="Work Centers">
+                                <Factory size={16} />
+                                <span className="hidden lg:inline">Centers</span>
+                            </Link>
+                            <Link href="/equipments" className={`${linkBaseClass} ${pathname === '/equipments' ? activeClass : inactiveClass}`} title="Equipment">
+                                <Monitor size={16} />
+                                <span className="hidden lg:inline">Equipments</span>
+                            </Link>
+                            <Link href="/reporting" className={`${linkBaseClass} ${pathname === '/reporting' ? activeClass : inactiveClass}`} title="Reporting">
+                                <BarChart3 size={16} />
+                                <span className="hidden lg:inline">Reports</span>
+                            </Link>
+                            <Link href="/teams" className={`${linkBaseClass} ${pathname === '/teams' ? activeClass : inactiveClass}`} title="Teams">
+                                <Users size={16} />
+                                <span className="hidden lg:inline">Teams</span>
                             </Link>
                         </div>
                     )}
