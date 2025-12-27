@@ -32,12 +32,21 @@ export default async function TeamsPage() {
 
     const allCompanies = await getCompanies();
 
+    const userCompany = allCompanies.find(c => c.id === user.companyId);
+
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
             <main className="p-6">
-                <div className="flex items-center justify-between gap-4 mb-8">
-                    <h1 className="text-2xl font-bold">Teams</h1>
-                    <CreateTeamModal companies={allCompanies} />
+                <div className="flex flex-col gap-4 mb-8">
+                    {userCompany && (
+                        <div className="text-center">
+                            <h2 className="text-2xl font-bold text-foreground">{userCompany.name}</h2>
+                        </div>
+                    )}
+                    <div className="flex items-center justify-between gap-4">
+                        <h1 className="text-2xl font-bold">Teams</h1>
+                        <CreateTeamModal companies={allCompanies} />
+                    </div>
                 </div>
 
                 <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xl">
@@ -47,13 +56,12 @@ export default async function TeamsPage() {
                                 <tr>
                                     <th className="px-6 py-4 border-b border-border">Team Name</th>
                                     <th className="px-6 py-4 border-b border-border">Team Members</th>
-                                    <th className="px-6 py-4 border-b border-border">Company</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {allTeams.length === 0 ? (
                                     <tr>
-                                        <td colSpan={3} className="px-6 py-8 text-center text-muted-foreground">
+                                        <td colSpan={2} className="px-6 py-8 text-center text-muted-foreground">
                                             No teams found. Create one to get started.
                                         </td>
                                     </tr>
@@ -75,15 +83,6 @@ export default async function TeamsPage() {
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground italic">No members</span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {team.company ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-medium text-foreground">{team.company.name}</span>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-muted-foreground">-</span>
                                                 )}
                                             </td>
                                         </tr>
