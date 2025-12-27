@@ -9,12 +9,14 @@ import { ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewMaintenanceRequestPage({ searchParams }: { searchParams: { equipmentId?: string } }) {
+export default async function NewMaintenanceRequestPage({ searchParams }: { searchParams: { equipmentId?: string; type?: string; scheduledDate?: string } }) {
     const user = await getCurrentUser();
     if (!user || !user.companyId) return <div>Unauthorized</div>;
 
     const resolvedSearchParams = await searchParams;
     const preselectedEquipmentId = resolvedSearchParams.equipmentId;
+    const preselectedType = resolvedSearchParams.type;
+    const preselectedDate = resolvedSearchParams.scheduledDate;
 
     const [equipments, teams, companyUsers, workCenters] = await Promise.all([
         getEquipmentsByCompanyId(user.companyId),
@@ -23,11 +25,13 @@ export default async function NewMaintenanceRequestPage({ searchParams }: { sear
         getWorkCenters(),
     ]);
 
-    // Construct initial data if equipmentId is passed
-    const initialData = preselectedEquipmentId ? {
-        equipmentId: preselectedEquipmentId,
+    // Construct initial data if params are passed
+    const initialData = {
+        equipmentId: preselectedEquipmentId || "",
         maintenanceScope: "equipment",
-    } : {};
+        type: preselectedType || "corrective",
+        scheduledDate: preselectedDate || "",
+    };
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans p-6 selection:bg-primary/30">
