@@ -24,6 +24,7 @@ export const equipmentUsedByEnum = pgEnum("equipment_used_by", ["employee", "dep
 export const teams = pgTable("teams", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // e.g., "Mechanics", "IT Support"
+  companyId: integer("company_id").references(() => companies.id),
 });
 
 // --- 2. USERS (Source 22-23) ---
@@ -34,6 +35,7 @@ export const users = pgTable("users", {
   role: userRoleEnum("role").default("technician"),
   teamId: integer("team_id").references(() => teams.id), // Links user to a specialized team
   avatarUrl: text("avatar_url"), // For the Kanban visual indicator [cite: 59]
+  companyId: integer("company_id").references(() => companies.id), // Link user to a company
 });
 
 // --- 2.5 COMPANIES (Source: UI) ---
@@ -121,10 +123,25 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
 
 // --- RELATIONS (Crucial for "Smart Buttons" & Joins) ---
 
-export const teamsRelations = relations(teams, ({ many }) => ({
+export const teamsRelations = relations(teams, ({ many, one }) => ({
   users: many(users),
   equipment: many(equipment),
   requests: many(maintenanceRequests),
+  company: one(companies, {
+    fields: [teams.companyId],
+    references: [companies.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ one }) => ({
+  team: one(teams, {
+    fields: [users.teamId],
+    references: [teams.id],
+  }),
+  company: one(companies, {
+    fields: [users.companyId],
+    references: [companies.id],
+  }),
 }));
 
 export const equipmentRelations = relations(equipment, ({ one, many }) => ({
