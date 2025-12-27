@@ -23,15 +23,7 @@ export default function MaintenanceDashboard() {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
 
-            {/* --- Top Navigation --- */}
-            <nav className="flex items-center gap-6 px-6 py-3 border-b border-border text-sm font-medium text-muted-foreground">
-                <div className="text-foreground font-bold text-lg mr-4">Maintenance</div>
-                <a href="#" className="text-foreground hover:text-primary transition-colors">Dashboard</a>
-                <a href="#" className="hover:text-primary transition-colors">Maintenance Calendar</a>
-                <a href="#" className="hover:text-primary transition-colors">Equipment</a>
-                <a href="#" className="hover:text-primary transition-colors">Reporting</a>
-                <a href="#" className="hover:text-primary transition-colors">Teams</a>
-            </nav>
+
 
             <main className="p-6">
 

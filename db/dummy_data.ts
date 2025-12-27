@@ -18,8 +18,8 @@ export const mockUsers = [
 ];
 
 export const mockWorkCenters = [
-    { id: 1, name: "Assembly Line 1", code: "WC-001", tag: "Assembly", costperhour: 100.0, capacity: 1000, timeEfficiency: 95.0, oeeTarget: 85.0 },
-    { id: 2, name: "Packaging Unit", code: "WC-002", tag: "Packaging", costperhour: 80.0, capacity: 800, timeEfficiency: 90.0, oeeTarget: 80.0 },
+    { id: 1, name: "Assembly Line 1", code: "WC-001", tag: "Assembly", costperhour: 100.0, capacity: 1000, timeEfficiency: 95.0, oeeTarget: 85.0, alternativeWorkCenterId: null },
+    { id: 2, name: "Packaging Unit", code: "WC-002", tag: "Packaging", costperhour: 80.0, capacity: 800, timeEfficiency: 90.0, oeeTarget: 80.0, alternativeWorkCenterId: 1 },
 ];
 
 export const mockEquipment = [
