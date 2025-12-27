@@ -3,8 +3,16 @@ import { relations } from "drizzle-orm";
 
 // --- ENUMS (Strictly defined from Source 27-29, 55) ---
 // Defining these ensures your frontend dropdowns match the DB exactly.
-export const requestTypeEnum = pgEnum("request_type", ["corrective", "preventive"]);
-export const requestStageEnum = pgEnum("request_stage", ["new", "in_progress", "repaired", "scrap"]);
+export const requestTypeEnum = pgEnum("request_type", [
+  "corrective",
+  "preventive",
+]);
+export const requestStageEnum = pgEnum("request_stage", [
+  "new",
+  "in_progress",
+  "repaired",
+  "scrap",
+]);
 export const userRoleEnum = pgEnum("user_role", ["technician", "manager"]);
 export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "location", "other"]);
 
@@ -113,3 +121,4 @@ export const requestsRelations = relations(maintenanceRequests, ({ one }) => ({
     references: [companies.id],
   }),
 }));
+
