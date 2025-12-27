@@ -5,12 +5,8 @@ import { ArrowLeft, Wrench, Calendar, User, Building, Hash, Tag, MapPin, Activit
 
 export const dynamic = "force-dynamic";
 
-export default async function EquipmentDetailsPage({ params }: { params: { id: string } }) {
+export default async function EquipmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const user = await getCurrentUser();
-
-    // Parsing params awaits in Next15? The user previously had issues with searchParams. 
-    // Usually params are also promises in new versions but let's see. 
-    // Adapting to strictly awaited params if consistent with searchParams behavior just seen.
     const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
 
@@ -31,60 +27,66 @@ export default async function EquipmentDetailsPage({ params }: { params: { id: s
         );
     }
 
-    // Check optional chaining just in case, though DB query returns objects
     const maintenanceCount = equipment.maintenanceCount || 0;
 
     return (
-        <div className="min-h-screen bg-background text-foreground font-sans p-6 selection:bg-primary/30">
-            <div className="max-w-5xl mx-auto space-y-6">
+        <div className="min-h-screen bg-background text-foreground font-sans p-6 md:p-8">
+            <div className="max-w-6xl mx-auto space-y-8">
                 {/* Header / Breadcrumb */}
-                <div className="flex items-center gap-4 mb-2">
-                    <Link href="/equipments" className="text-muted-foreground hover:text-foreground transition-colors p-2 -ml-2 rounded-full hover:bg-muted/50">
-                        <ArrowLeft size={20} />
+                <div className="flex flex-col gap-4">
+                    <Link href="/equipments" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors group w-fit">
+                        <ArrowLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform" />
+                        Back to Equipment
                     </Link>
-                    <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Link href="/equipments" className="hover:text-foreground">Equipment</Link>
-                        <span>/</span>
-                        <span className="text-foreground font-medium">{equipment.name}</span>
-                    </nav>
                 </div>
 
                 {/* Main Card */}
-                <div className="bg-card border border-border rounded-xl shadow-lg overflow-hidden">
+                <div className="bg-card/40 backdrop-blur-md border border-border/60 rounded-xl shadow-lg overflow-hidden">
                     {/* Top Bar with Smart Button */}
-                    <div className="border-b border-border bg-muted/20 p-4 flex justify-between items-center h-20">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                                <Activity size={20} />
+                    <div className="border-b border-border/60 bg-muted/30 p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="h-14 w-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/10">
+                                <Activity size={28} />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-foreground">{equipment.name}</h1>
-                                <div className="text-xs text-muted-foreground font-mono">#{equipment.serialNumber}</div>
+                                <h1 className="text-2xl font-bold tracking-tight text-foreground">{equipment.name}</h1>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-xs font-mono text-muted-foreground bg-background/50 border border-border/50 px-1.5 py-0.5 rounded">#{equipment.serialNumber}</span>
+                                    <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-medium">
+                                        {equipment.category}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Smart Button */}
-                        <div className="flex gap-2">
-                            <Link
-                                href={`/maintenance-requests?equipmentId=${equipment.id}`}
-                                className="group relative flex flex-col items-center justify-center bg-background border border-border rounded-lg px-4 py-1.5 hover:bg-muted/50 hover:border-primary/50 transition-all shadow-sm active:scale-95"
-                            >
-                                <div className="flex items-center gap-2 text-primary font-bold text-lg">
-                                    <Wrench size={18} />
-                                    <span>{maintenanceCount}</span>
+                        <Link
+                            href={`/maintenance-requests?equipmentId=${equipment.id}`}
+                            className="group relative flex items-center gap-3 bg-background border border-border/60 rounded-xl pl-4 pr-5 py-2.5 hover:bg-muted/50 hover:border-primary/50 transition-all shadow-sm active:scale-[0.98]"
+                        >
+                            <div className="flex flex-col items-center justify-center">
+                                <span className={`text-xl font-bold ${maintenanceCount > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                                    {maintenanceCount}
+                                </span>
+                            </div>
+                            <div className="h-8 w-px bg-border/60" />
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground group-hover:text-primary transition-colors">Active Requests</span>
+                                <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                    <Wrench size={12} />
+                                    <span>Manage Maintenance</span>
                                 </div>
-                                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold group-hover:text-primary/80">Maintenance</span>
-                            </Link>
-                        </div>
+                            </div>
+                        </Link>
                     </div>
 
                     {/* Details Content */}
                     <div className="p-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
 
                             {/* Left Column */}
                             <div className="space-y-6">
-                                <SectionHeader title="Identification" />
+                                <SectionHeader title="Identification Data" />
 
                                 <DetailRow
                                     icon={<Hash size={16} />}
@@ -104,7 +106,7 @@ export default async function EquipmentDetailsPage({ params }: { params: { id: s
                                 />
                                 <DetailRow
                                     icon={<MapPin size={16} />}
-                                    label="Used in Location"
+                                    label="Physical Location"
                                     value={equipment.location || "-"}
                                 />
                                 <DetailRow
@@ -120,40 +122,42 @@ export default async function EquipmentDetailsPage({ params }: { params: { id: s
 
                                 <DetailRow
                                     icon={<User size={16} />}
-                                    label="Technician"
-                                    value={equipment.defaultTechnicianId ? "Assigned" : "Unassigned"} // Ideally fetch name, but schema has ID. user relation not fully loaded unless we update query. Let's update query later if strictly needed, or just show ID for now relative to ease.
-                                    valueClassName={!equipment.defaultTechnicianId ? "text-muted-foreground italic" : ""}
+                                    label="Default Technician"
+                                    value={equipment.defaultTechnicianId ? "Technician Assigned" : "Unassigned"}
+                                    valueClassName={!equipment.defaultTechnicianId ? "text-muted-foreground italic" : "text-emerald-600 font-medium"}
                                 />
                                 <DetailRow
                                     icon={<User size={16} />}
-                                    label="Employee"
-                                    value={equipment.employee?.name || "-"}
+                                    label="Assigned Employee"
+                                    value={equipment.employee?.name || "Available"}
+                                    valueClassName={!equipment.employee ? "text-emerald-600 font-medium italic" : ""}
                                 />
                                 <DetailRow
-                                    icon={<UsersIcon size={16} className="text-muted-foreground" />}
+                                    icon={<UsersIcon size={16} />}
                                     label="Maintenance Team"
                                     value={equipment.team?.name || "-"}
                                 />
                                 <DetailRow
                                     icon={<Calendar size={16} />}
-                                    label="Assigned Date"
+                                    label="Assignment Date"
                                     value={equipment.assignedDate ? new Date(equipment.assignedDate).toLocaleDateString() : "-"}
                                 />
                                 <DetailRow
                                     icon={<Calendar size={16} />}
-                                    label="Scrap Date"
+                                    label="Target Scrap Date"
                                     value={equipment.scrapDate ? new Date(equipment.scrapDate).toLocaleDateString() : "-"}
                                 />
                             </div>
                         </div>
 
                         {/* Description */}
-                        <div className="mt-10 pt-8 border-t border-border">
-                            <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                                Description
+                        <div className="mt-12 pt-8 border-t border-border/60">
+                            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
+                                <Activity size={16} className="text-primary" />
+                                Description & Notes
                             </h3>
-                            <div className="bg-muted/30 rounded-lg p-4 text-sm text-foreground/80 min-h-[100px] whitespace-pre-wrap">
-                                {equipment.description || <span className="text-muted-foreground italic">No description provided.</span>}
+                            <div className="bg-muted/20 border border-border/40 rounded-lg p-5 text-sm leading-relaxed text-foreground/90 min-h-[100px] whitespace-pre-wrap">
+                                {equipment.description || <span className="text-muted-foreground italic opacity-70">No description provided for this equipment.</span>}
                             </div>
                         </div>
                     </div>
@@ -166,20 +170,25 @@ export default async function EquipmentDetailsPage({ params }: { params: { id: s
 // Sub-components for cleaner UI
 function SectionHeader({ title }: { title: string }) {
     return (
-        <h3 className="text-xs font-bold uppercase tracking-widest text-primary/80 border-b border-primary/20 pb-2 mb-4">
-            {title}
-        </h3>
+        <div className="flex items-center gap-3 pb-2 mb-2 border-b border-border/40">
+            <div className="h-1 w-6 bg-primary rounded-full"></div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                {title}
+            </h3>
+        </div>
     );
 }
 
 function DetailRow({ icon, label, value, isMono = false, valueClassName = "" }: { icon: React.ReactNode, label: string, value: string | number, isMono?: boolean, valueClassName?: string }) {
     return (
-        <div className="flex items-center justify-between group">
-            <div className="flex items-center gap-2.5 text-muted-foreground">
-                <span className="text-muted-foreground/70">{icon}</span>
+        <div className="flex items-center justify-between group py-1.5">
+            <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="p-1.5 rounded-md bg-muted/40 text-muted-foreground/80 group-hover:text-primary group-hover:bg-primary/5 transition-colors">
+                    {icon}
+                </div>
                 <span className="text-sm font-medium">{label}</span>
             </div>
-            <div className={`text-sm font-medium text-foreground ${isMono ? "font-mono" : ""} ${valueClassName}`}>
+            <div className={`text-sm text-foreground ${isMono ? "font-mono text-xs" : "font-medium"} ${valueClassName}`}>
                 {value}
             </div>
         </div>
