@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { maintenanceRequests } from "@/db/schema";
+import { maintenanceRequests, users } from "@/db/schema";
 import { getSessionId } from "@/lib/auth";
+import { getUserById } from "@/db/users";
+import { eq, and } from "drizzle-orm";
 
 export async function GET(request: Request) {
     try {
         const userId = await getSessionId();
         if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+        const user = await getUserById(userId);
+        if (!user || !user.companyId) {
+            return NextResponse.json({ error: "Unauthorized: No Company Assigned" }, { status: 401 });
+        }
+
         // Fetch all maintenance requests with relations
         const requests = await db.query.maintenanceRequests.findMany({
+            where: eq(maintenanceRequests.companyId, user.companyId),
             with: {
                 equipment: {
                     with: {
@@ -27,7 +35,7 @@ export async function GET(request: Request) {
         // Calculate Stats
         // 1. Total Technicians
         const allTechnicians = await db.query.users.findMany({
-            where: (users, { eq }) => eq(users.role, "technician"),
+            where: and(eq(users.role, "technician"), eq(users.companyId, user.companyId)),
         });
         const totalTechnicians = allTechnicians.length;
 
