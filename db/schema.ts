@@ -39,6 +39,13 @@ export const companies = pgTable("companies", {
   name: text("name").notNull(),
 });
 
+// --- 2.8 WORK CENTERS (Source: User Request) ---
+export const workCenters = pgTable("work_centers", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  code: text("code"),
+});
+
 // --- 3. EQUIPMENT (Source 7-18) ---
 export const equipment = pgTable("equipment", {
   id: serial("id").primaryKey(),
@@ -75,6 +82,7 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
   // Scoping
   maintenanceScope: maintenanceScopeEnum("maintenance_scope").default("equipment"),
   equipmentId: integer("equipment_id").references(() => equipment.id),
+  workCenterId: integer("work_center_id").references(() => workCenters.id), // Added for "Work Center" scope
   category: text("category"),
 
   // Details
@@ -138,6 +146,10 @@ export const requestsRelations = relations(maintenanceRequests, ({ one }) => ({
   company: one(companies, {
     fields: [maintenanceRequests.companyId],
     references: [companies.id],
+  }),
+  workCenter: one(workCenters, {
+    fields: [maintenanceRequests.workCenterId],
+    references: [workCenters.id],
   }),
 }));
 
