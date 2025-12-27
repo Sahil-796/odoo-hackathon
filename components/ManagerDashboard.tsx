@@ -2,20 +2,20 @@
 
 import { useMemo, useState } from "react";
 import {
-    BarChart3,
-    Clock,
-    AlertTriangle,
-    CheckCircle2,
     Search,
     Filter,
     MoreVertical,
-    Calendar,
-    User,
-    Wrench,
     AlertCircle
 } from "lucide-react";
 
-export default function ManagerDashboard({ requests }: { requests: any[] }) {
+interface DashboardStats {
+    totalTechnicians: number;
+    activeTechnicians: number;
+    criticalEquipmentCount: number;
+    overdueRequestCount: number;
+}
+
+export default function ManagerDashboard({ requests, stats }: { requests: any[], stats: DashboardStats }) {
 
     const [activeTab, setActiveTab] = useState<"category" | "team">("category");
 
@@ -47,8 +47,8 @@ export default function ManagerDashboard({ requests }: { requests: any[] }) {
                         <button
                             onClick={() => setActiveTab("category")}
                             className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "category"
-                                    ? "bg-background text-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground"
+                                ? "bg-background text-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
                             Category
@@ -56,8 +56,8 @@ export default function ManagerDashboard({ requests }: { requests: any[] }) {
                         <button
                             onClick={() => setActiveTab("team")}
                             className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "team"
-                                    ? "bg-background text-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground"
+                                ? "bg-background text-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
                             Team
@@ -127,7 +127,7 @@ export default function ManagerDashboard({ requests }: { requests: any[] }) {
                     <div className="p-6 overflow-x-auto">
                         <table className="w-full text-sm text-left">
                             <thead className="text-muted-foreground font-medium border-b border-border">
-                                <tr>
+                                <tr className="text-muted-foreground font-medium border-b border-border">
                                     <th className="pb-3 pl-2">Request</th>
                                     <th className="pb-3">Status</th>
                                     <th className="pb-3">Priority</th>
@@ -199,35 +199,37 @@ export default function ManagerDashboard({ requests }: { requests: any[] }) {
                     </div>
                 </div>
 
-                {/* Scheduled Maintenance (Right Column) - Mocked for visual balance or can use real data if scheduledDate exists */}
-                <div className="bg-card rounded-xl border border-border shadow-sm p-6">
-                    <h2 className="text-lg font-semibold text-foreground mb-4">
-                        Scheduled for Today
-                    </h2>
-                    <div className="space-y-4">
-                        {/* Mock Items for layout fidelity */}
-                        {[1, 2, 3].map((_, i) => (
-                            <div
-                                key={i}
-                                className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border"
-                            >
-                                <div className="mt-1">
-                                    <Calendar className="w-5 h-5 text-primary" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-foreground text-sm">
-                                        Preventive Check #{100 + i}
-                                    </h4>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        CNC Machine 0{i + 1} • 2:00 PM
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                        <button className="w-full mt-2 py-2 text-sm text-primary font-medium hover:bg-primary/5 rounded-lg transition-colors border border-dashed border-primary/30">
-                            View Calendar
-                        </button>
+                {/* Summary Cards */}
+                <div className="flex flex-col gap-4">
+
+                    {/* Critical Equipment */}
+                    <div className="bg-card rounded-xl border border-red-500/30 shadow-sm p-6 relative overflow-hidden group hover:border-red-500/50 transition-colors">
+                        <div className="absolute inset-0 bg-red-500/5 pointer-events-none group-hover:bg-red-500/10 transition-colors" />
+                        <h3 className="text-red-500 font-medium text-sm mb-2 relative z-10">Critical Equipment</h3>
+                        <div className="text-3xl font-bold text-foreground relative z-10">{stats.criticalEquipmentCount} Units</div>
+                        <div className="text-xs text-red-400 mt-1 relative z-10">(Health &lt; 30%)</div>
                     </div>
+
+                    {/* Technician Load */}
+                    <div className="bg-card rounded-xl border border-blue-500/30 shadow-sm p-6 relative overflow-hidden group hover:border-blue-500/50 transition-colors">
+                        <div className="absolute inset-0 bg-blue-500/5 pointer-events-none group-hover:bg-blue-500/10 transition-colors" />
+                        <h3 className="text-blue-500 font-medium text-sm mb-2 relative z-10">Technician Load</h3>
+                        <div className="text-3xl font-bold text-foreground relative z-10">
+                            {stats.totalTechnicians > 0 ? Math.round((stats.activeTechnicians / stats.totalTechnicians) * 100) : 0}% Utilized
+                        </div>
+                        <div className="text-xs text-blue-400 mt-1 relative z-10">
+                            {stats.activeTechnicians} / {stats.totalTechnicians} Active
+                        </div>
+                    </div>
+
+                    {/* Open Requests */}
+                    <div className="bg-card rounded-xl border border-emerald-500/30 shadow-sm p-6 relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
+                        <div className="absolute inset-0 bg-emerald-500/5 pointer-events-none group-hover:bg-emerald-500/10 transition-colors" />
+                        <h3 className="text-emerald-500 font-medium text-sm mb-2 relative z-10">Open Requests</h3>
+                        <div className="text-3xl font-bold text-foreground relative z-10">{requests.filter(r => r.stage !== 'repaired' && r.stage !== 'scrap').length} Pending</div>
+                        <div className="text-xs text-emerald-400 mt-1 relative z-10">{stats.overdueRequestCount} Overdue</div>
+                    </div>
+
                 </div>
             </div>
         </div>
