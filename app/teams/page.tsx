@@ -1,12 +1,11 @@
 import { getCompanies, getTeams } from "@/db/teams";
-import { getUserById } from "@/db/users";
+import { getCurrentUser } from "@/utils/auth";
 import CreateTeamModal from "../../components/create-team-modal";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamsPage() {
-    const userId = 1;
-    const user = await getUserById(userId);
+    const user = await getCurrentUser();
 
     if (!user) {
         return (
@@ -45,7 +44,10 @@ export default async function TeamsPage() {
                     )}
                     <div className="flex items-center justify-between gap-4">
                         <h1 className="text-2xl font-bold">Teams</h1>
-                        <CreateTeamModal companies={allCompanies} />
+                        <CreateTeamModal
+                            companyId={user.companyId}
+                            companyName={userCompany?.name || "Unknown Company"}
+                        />
                     </div>
                 </div>
 

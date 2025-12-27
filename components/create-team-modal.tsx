@@ -9,7 +9,7 @@ type Company = {
     name: string;
 };
 
-export default function CreateTeamModal({ companies }: { companies: Company[] }) {
+export default function CreateTeamModal({ companyId, companyName }: { companyId: number; companyName: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -22,13 +22,12 @@ export default function CreateTeamModal({ companies }: { companies: Company[] })
 
         const formData = new FormData(e.currentTarget);
         const name = formData.get("name") as string;
-        const companyId = formData.get("companyId") as string;
 
         try {
-            const res = await fetch("/api/(teams)/cerateTeam", {
+            const res = await fetch("/api/createTeam", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, companyId: parseInt(companyId) }),
+                body: JSON.stringify({ name, companyId }),
             });
 
             if (!res.ok) {
@@ -76,6 +75,10 @@ export default function CreateTeamModal({ companies }: { companies: Company[] })
                                     </div>
                                 )}
 
+                                <div className="p-3 bg-blue-50 text-blue-700 rounded-md text-sm">
+                                    Creating team for <span className="font-semibold">{companyName}</span>
+                                </div>
+
                                 <div className="space-y-2">
                                     <label htmlFor="name" className="text-sm font-medium">
                                         Team Name
@@ -90,25 +93,8 @@ export default function CreateTeamModal({ companies }: { companies: Company[] })
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label htmlFor="companyId" className="text-sm font-medium">
-                                        Company
-                                    </label>
-                                    <select
-                                        id="companyId"
-                                        name="companyId"
-                                        required
-                                        defaultValue=""
-                                        className="w-full bg-muted border border-border rounded px-3 py-2 outline-none focus:border-primary"
-                                    >
-                                        <option value="" disabled>Select a company...</option>
-                                        {companies.map((company) => (
-                                            <option key={company.id} value={company.id}>
-                                                {company.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                {/* Company is now fixed to the user's company */}
+                                <input type="hidden" name="companyId" value={companyId} />
 
                                 <div className="pt-4 flex justify-end gap-3">
                                     <button
