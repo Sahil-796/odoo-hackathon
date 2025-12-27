@@ -1,40 +1,24 @@
 import React from 'react';
 import { Search, Plus, User, AlertCircle, CheckCircle2, MoreHorizontal, ChevronDown } from 'lucide-react';
+import { mockMaintenanceRequests, mockUsers, mockCompanies } from '@/db/dummy_data';
+
 
 export default function MaintenanceDashboard() {
-    // Mock Data for the list view
-    const requests = [
-        {
-            id: 1,
-            subject: "Test activity",
-            employee: "Mitchell Admin",
-            technician: "Aka Foster",
-            category: "computer",
-            stage: "New Request",
-            company: "My Company (San Francisco)",
-            priority: "low"
-        },
-        {
-            id: 2,
-            subject: "Leaking Pipe in Factory",
-            employee: "John Doe",
-            technician: "Marc Demo",
-            category: "plumbing",
-            stage: "In Progress",
-            company: "My Company (San Francisco)",
-            priority: "high"
-        },
-        {
-            id: 3,
-            subject: "Conveyor Belt Motor",
-            employee: "Sarah Smith",
-            technician: "Aka Foster",
-            category: "machinery",
-            stage: "Repaired",
-            company: "Chicago Branch",
-            priority: "critical"
-        }
-    ];
+    // Map mock data to the format expected by the dashboard
+    const requests = mockMaintenanceRequests.map(req => {
+        const employee = mockUsers.find(u => u.id === req.createdBy)?.name || 'Unknown';
+        const technician = mockUsers.find(u => u.id === req.technicianId)?.name || 'Unassigned';
+        const company = mockCompanies.find(c => c.id === req.companyId)?.name || 'Unknown';
+
+        return {
+            ...req,
+            employee,
+            technician,
+            company,
+            // Normalize stage for display if needed, but we can use the raw enum value for logic
+            stageDisplay: req.stage.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+        };
+    });
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
@@ -144,12 +128,14 @@ export default function MaintenanceDashboard() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-medium 
-                      ${req.stage === 'New Request' ? 'bg-blue-500/20 text-blue-400' :
-                                                req.stage === 'Repaired' ? 'bg-green-500/20 text-green-400' :
-                                                    'bg-yellow-500/20 text-yellow-400'
+                      ${req.stage === 'new' ? 'bg-blue-500/20 text-blue-400' :
+                                                req.stage === 'repaired' ? 'bg-green-500/20 text-green-400' :
+                                                    req.stage === 'in_progress' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                        'bg-red-500/20 text-red-400'
                                             }`}>
-                                            {req.stage}
+                                            {req.stageDisplay}
                                         </span>
+
                                     </td>
                                     <td className="px-6 py-4">{req.company}</td>
                                 </tr>
