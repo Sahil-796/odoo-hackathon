@@ -76,7 +76,7 @@ export default function Navbar({ user }: NavbarProps) {
                                 <Wrench size={16} />
                                 <span className="hidden lg:inline">Requests</span>
                             </Link>
-                            <Link href="/reports" className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${pathname === '/reports' ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`}>
+                            <Link href="/reports" className={`${linkBaseClass} ${pathname === '/reports' ? activeClass : inactiveClass}`} title="Reporting">
                                 <BarChart3 size={16} />
                                 <span>Reports</span>
                             </Link>
