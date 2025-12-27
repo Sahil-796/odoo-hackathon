@@ -55,7 +55,7 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                             <ArrowLeft size={20} />
                         </Link>
                     )}
-                    <div>
+                    <div className="flex-1">
                         <h1 className="text-2xl font-bold flex items-center gap-2">
                             <Wrench className="w-6 h-6 text-primary" />
                             Maintenance Requests
@@ -66,6 +66,13 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                             </p>
                         )}
                     </div>
+                    <Link
+                        href={`/maintenance-requests/new${equipmentId ? `?equipmentId=${equipmentId}` : ""}`}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-semibold text-sm transition-colors shadow-lg shadow-primary/5 flex items-center gap-2"
+                    >
+                        <Wrench size={16} />
+                        New Request
+                    </Link>
                 </div>
 
                 {/* List */}
@@ -96,7 +103,9 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                                 requests.map((req) => (
                                     <tr key={req.id} className="hover:bg-muted/30 transition-colors">
                                         <td className="px-6 py-4 font-medium text-foreground">
-                                            {req.subject}
+                                            <Link href={`/maintenance-requests/${req.id}`} className="hover:underline hover:text-primary transition-colors">
+                                                {req.subject}
+                                            </Link>
                                         </td>
                                         <td className="px-6 py-4">
                                             {req.equipment?.name || "-"}

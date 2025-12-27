@@ -124,9 +124,55 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// --- 5. WORKSHEET LINES (Source: User Request - Checklist) ---
+export const worksheetLines = pgTable("worksheet_lines", {
+  id: serial("id").primaryKey(),
+  maintenanceRequestId: integer("maintenance_request_id").references(() => maintenanceRequests.id).notNull(),
+  content: text("content").notNull(),
+  isDone: boolean("is_done").default(false).notNull(),
+  order: integer("order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // --- RELATIONS (Crucial for "Smart Buttons" & Joins) ---
 
 // --- 2.2 USERS_TO_TEAMS (Many-to-Many) ---
+// ... (existing code) ...
+
+export const requestsRelations = relations(maintenanceRequests, ({ one, many }) => ({
+  equipment: one(equipment, {
+    fields: [maintenanceRequests.equipmentId],
+    references: [equipment.id],
+  }),
+  technician: one(users, {
+    fields: [maintenanceRequests.technicianId],
+    references: [users.id],
+  }),
+  company: one(companies, {
+    fields: [maintenanceRequests.companyId],
+    references: [companies.id],
+  }),
+  workCenter: one(workCenters, {
+    fields: [maintenanceRequests.workCenterId],
+    references: [workCenters.id],
+  }),
+  team: one(teams, {
+    fields: [maintenanceRequests.teamId],
+    references: [teams.id],
+  }),
+  createdBy: one(users, {
+    fields: [maintenanceRequests.createdBy],
+    references: [users.id],
+  }),
+  worksheetLines: many(worksheetLines),
+}));
+
+export const worksheetLinesRelations = relations(worksheetLines, ({ one }) => ({
+  request: one(maintenanceRequests, {
+    fields: [worksheetLines.maintenanceRequestId],
+    references: [maintenanceRequests.id],
+  }),
+}));
 export const usersToTeams = pgTable("users_to_teams", {
   userId: integer("user_id").references(() => users.id).notNull(),
   teamId: integer("team_id").references(() => teams.id).notNull(),
@@ -181,26 +227,5 @@ export const equipmentRelations = relations(equipment, ({ one, many }) => ({
   requests: many(maintenanceRequests), // Needed for the "Badge" count on Equipment Form [cite: 73]
 }));
 
-export const requestsRelations = relations(maintenanceRequests, ({ one }) => ({
-  equipment: one(equipment, {
-    fields: [maintenanceRequests.equipmentId],
-    references: [equipment.id],
-  }),
-  technician: one(users, {
-    fields: [maintenanceRequests.technicianId],
-    references: [users.id],
-  }),
-  company: one(companies, {
-    fields: [maintenanceRequests.companyId],
-    references: [companies.id],
-  }),
-  workCenter: one(workCenters, {
-    fields: [maintenanceRequests.workCenterId],
-    references: [workCenters.id],
-  }),
-  team: one(teams, {
-    fields: [maintenanceRequests.teamId],
-    references: [teams.id],
-  }),
-}));
+
 
