@@ -17,19 +17,22 @@ export const metadata: Metadata = {
   description: "GearGuard | Maintenance Management",
 };
 
+import { getCurrentUser } from "@/utils/auth";
 import Navbar from "@/components/Navbar";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
+        <Navbar user={user as any} />
         {children}
       </body>
     </html>
