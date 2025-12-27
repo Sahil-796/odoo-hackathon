@@ -15,6 +15,7 @@ export const requestStageEnum = pgEnum("request_stage", [
 ]);
 export const userRoleEnum = pgEnum("user_role", ["technician", "manager"]);
 export const maintenanceScopeEnum = pgEnum("maintenance_scope", ["equipment", "location", "other"]);
+export const equipmentUsedByEnum = pgEnum("equipment_used_by", ["employee", "department", "other"]);
 
 // --- 1. TEAMS (Source 19-24) ---
 export const teams = pgTable("teams", {
@@ -44,16 +45,26 @@ export const equipment = pgTable("equipment", {
   name: text("name").notNull(), // e.g., "CNC Machine"
   serialNumber: text("serial_number").notNull().unique(),
   category: text("category").notNull(), // e.g., "Production"
+  companyId: integer("company_id").references(() => companies.id),
+
+  // Assignment & Location
   location: text("location"), // Physical location [cite: 18]
+  workCenter: text("work_center"),
+  usedBy: equipmentUsedByEnum("used_by").default("employee"),
+  employeeId: integer("employee_id").references(() => users.id),
+  assignedDate: date("assigned_date"),
+
+  // Dates & Status
   purchaseDate: timestamp("purchase_date"),
   warrantyInfo: text("warranty_info"),
+  scrapDate: date("scrap_date"),
+  isScrapped: boolean("is_scrapped").default(false), // Logic: If scrapDate is set, this is true
 
   // Default assignments for Auto-Fill Logic 
   maintenanceTeamId: integer("maintenance_team_id").references(() => teams.id).notNull(),
   defaultTechnicianId: integer("default_technician_id").references(() => users.id),
 
-  // Logic: If a request hits "Scrap" stage, this flag turns true [cite: 76]
-  isScrapped: boolean("is_scrapped").default(false),
+  description: text("description"),
 });
 
 // --- 4. MAINTENANCE REQUESTS (Source 25-35) ---
@@ -103,6 +114,14 @@ export const equipmentRelations = relations(equipment, ({ one, many }) => ({
   team: one(teams, {
     fields: [equipment.maintenanceTeamId],
     references: [teams.id],
+  }),
+  company: one(companies, {
+    fields: [equipment.companyId],
+    references: [companies.id],
+  }),
+  employee: one(users, {
+    fields: [equipment.employeeId],
+    references: [users.id],
   }),
   requests: many(maintenanceRequests), // Needed for the "Badge" count on Equipment Form [cite: 73]
 }));
