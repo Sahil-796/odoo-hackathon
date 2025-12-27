@@ -45,10 +45,12 @@ export default async function TeamsPage() {
                     )}
                     <div className="flex items-center justify-between gap-4">
                         <h1 className="text-2xl font-bold">Teams</h1>
-                        <CreateTeamModal
-                            companyId={user.companyId}
-                            companyName={userCompany?.name || "Unknown Company"}
-                        />
+                        {user.role === "manager" && (
+                            <CreateTeamModal
+                                companyId={user.companyId}
+                                companyName={userCompany?.name || "Unknown Company"}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -78,9 +80,9 @@ export default async function TeamsPage() {
                                                 </Link>
                                             </td>
                                             <td className="px-6 py-4">
-                                                {team.users.length > 0 ? (
+                                                {team.members.length > 0 ? (
                                                     <div className="flex flex-wrap gap-2">
-                                                        {team.users.slice(0, 3).map((user) => (
+                                                        {team.members.slice(0, 3).map(({ user }) => (
                                                             <span
                                                                 key={user.id}
                                                                 className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary-foreground ring-1 ring-inset ring-primary/30"
@@ -88,9 +90,9 @@ export default async function TeamsPage() {
                                                                 {user.name}
                                                             </span>
                                                         ))}
-                                                        {team.users.length > 3 && (
+                                                        {team.members.length > 3 && (
                                                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground ring-1 ring-inset ring-border">
-                                                                +{team.users.length - 3} more
+                                                                +{team.members.length - 3} more
                                                             </span>
                                                         )}
                                                     </div>

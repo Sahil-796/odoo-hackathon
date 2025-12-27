@@ -43,6 +43,13 @@ export async function POST(request: Request) {
             );
         }
 
+        if (user.role !== "manager") {
+            return NextResponse.json(
+                { error: "Only managers can create teams" },
+                { status: 403 }
+            );
+        }
+
         const body = await request.json();
         const { name } = body;
 

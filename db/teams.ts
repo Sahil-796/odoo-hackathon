@@ -19,7 +19,11 @@ export async function getTeams(companyId: number) {
     return await db.query.teams.findMany({
         where: eq(teams.companyId, companyId),
         with: {
-            users: true,
+            members: {
+                with: {
+                    user: true
+                }
+            },
             company: true,
         },
     });
@@ -33,7 +37,11 @@ export async function getTeam(teamId: number) {
     return await db.query.teams.findFirst({
         where: eq(teams.id, teamId),
         with: {
-            users: true,
+            members: {
+                with: {
+                    user: true
+                }
+            },
             company: true,
             requests: {
                 with: {

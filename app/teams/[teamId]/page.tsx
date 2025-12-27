@@ -59,17 +59,17 @@ export default async function TeamDetailsPage({ params }: { params: Promise<{ te
                         <Users size={20} className="text-primary" />
                         <h2 className="font-bold text-lg">Team Members</h2>
                         <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-                            {team.users.length}
+                            {team.members.length}
                         </span>
                     </div>
 
                     <div className="divide-y divide-border">
-                        {team.users.length === 0 ? (
+                        {team.members.length === 0 ? (
                             <div className="p-8 text-center text-muted-foreground italic">
                                 No members in this team.
                             </div>
                         ) : (
-                            team.users.map((member) => (
+                            team.members.map(({ user: member }) => (
                                 <div key={member.id} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-base">

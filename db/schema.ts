@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn, primaryKey } from "drizzle-orm/pg-core";
 import { relations, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 
 
@@ -37,7 +37,6 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
   password: text("password"),
   role: userRoleEnum("role").default("technician"),
-  teamId: integer("team_id").references(() => teams.id), // Links user to a specialized team
   avatarUrl: text("avatar_url"), // For the Kanban visual indicator [cite: 59]
   companyId: integer("company_id").references(() => companies.id), // Link user to a company
 });
@@ -127,8 +126,18 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
 
 // --- RELATIONS (Crucial for "Smart Buttons" & Joins) ---
 
+// --- 2.2 USERS_TO_TEAMS (Many-to-Many) ---
+export const usersToTeams = pgTable("users_to_teams", {
+  userId: integer("user_id").references(() => users.id).notNull(),
+  teamId: integer("team_id").references(() => teams.id).notNull(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.userId, t.teamId] }),
+}));
+
+// --- RELATIONS (Crucial for "Smart Buttons" & Joins) ---
+
 export const teamsRelations = relations(teams, ({ many, one }) => ({
-  users: many(users),
+  members: many(usersToTeams),
   equipment: many(equipment),
   requests: many(maintenanceRequests),
   company: one(companies, {
@@ -137,14 +146,22 @@ export const teamsRelations = relations(teams, ({ many, one }) => ({
   }),
 }));
 
-export const usersRelations = relations(users, ({ one }) => ({
-  team: one(teams, {
-    fields: [users.teamId],
-    references: [teams.id],
-  }),
+export const usersRelations = relations(users, ({ one, many }) => ({
+  teams: many(usersToTeams),
   company: one(companies, {
     fields: [users.companyId],
     references: [companies.id],
+  }),
+}));
+
+export const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
+  team: one(teams, {
+    fields: [usersToTeams.teamId],
+    references: [teams.id],
+  }),
+  user: one(users, {
+    fields: [usersToTeams.userId],
+    references: [users.id],
   }),
 }));
 
