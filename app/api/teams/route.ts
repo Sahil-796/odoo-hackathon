@@ -4,6 +4,11 @@ import { getCurrentUser } from "@/utils/auth";
 
 export async function GET(request: Request) {
     try {
+        const user = await getCurrentUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(request.url);
         const companyIdParam = searchParams.get("companyId");
 

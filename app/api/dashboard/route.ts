@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { maintenanceRequests } from "@/db/schema";
+import { getSessionId } from "@/lib/auth";
 
 export async function GET(request: Request) {
     try {
+        const userId = await getSessionId();
+        if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         // Fetch all maintenance requests with relations
         const requests = await db.query.maintenanceRequests.findMany({
             with: {

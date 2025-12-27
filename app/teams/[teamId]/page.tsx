@@ -10,7 +10,8 @@ import RemoveMemberButton from "@/components/remove-member-button";
 
 export default async function TeamDetailsPage({ params }: { params: Promise<{ teamId: string }> }) {
     const user = await getCurrentUser();
-    if (!user || user.companyId === null) return redirect("/");
+    if (!user) return redirect("/login");
+    if (user.companyId === null) return redirect("/");
 
     const { teamId: teamIdStr } = await params;
     const teamId = parseInt(teamIdStr);

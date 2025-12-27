@@ -2,6 +2,7 @@ import { getCompanies, getTeams } from "@/db/teams";
 import { getCurrentUser } from "@/utils/auth";
 import CreateTeamModal from "../../components/create-team-modal";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -9,13 +10,7 @@ export default async function TeamsPage() {
     const user = await getCurrentUser();
 
     if (!user) {
-        return (
-            <div className="p-8 max-w-7xl mx-auto">
-                <div className="bg-red-50 text-red-700 p-4 rounded-lg">
-                    User not found. Please seed the database.
-                </div>
-            </div>
-        );
+        return redirect("/login");
     }
 
     if (!user.companyId) {
