@@ -1,6 +1,6 @@
 import { db } from "./index";
 import { maintenanceRequests, equipment } from "./schema";
-import { eq, desc, type InferInsertModel } from "drizzle-orm";
+import { eq, desc, sql, type InferInsertModel } from "drizzle-orm";
 
 export type NewMaintenanceRequest = InferInsertModel<typeof maintenanceRequests>;
 
@@ -27,7 +27,7 @@ export async function getMaintenanceRequestById(id: number) {
 
 export async function updateMaintenanceRequest(id: number, data: Partial<NewMaintenanceRequest>) {
     return await db.update(maintenanceRequests)
-        .set({ ...data, updatedAt: new Date() })
+        .set({ ...data, updatedAt: sql`now()` })
         .where(eq(maintenanceRequests.id, id))
         .returning();
 }

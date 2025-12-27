@@ -15,9 +15,9 @@ const createSchema = z.object({
     teamId: z.number(),
     technicianId: z.number().optional().nullable(),
     type: z.enum(["corrective", "preventive"]),
-    priority: z.number().optional(),
+    priority: z.coerce.number().optional(),
     scheduledDate: z.string().optional().nullable().transform(val => val ? new Date(val) : null),
-    duration: z.number().optional().nullable(),
+    duration: z.coerce.number().optional().nullable(),
     requestDate: z.string().optional().transform(val => val || new Date().toISOString().split('T')[0]), // Returns YYYY-MM-DD string
 });
 

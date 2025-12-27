@@ -55,6 +55,11 @@ export default async function EquipmentDetailsPage({ params }: { params: Promise
                                     <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-medium">
                                         {equipment.category}
                                     </span>
+                                    {equipment.isScrapped && (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 font-bold border border-red-200">
+                                            SCRAPPED
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -144,8 +149,9 @@ export default async function EquipmentDetailsPage({ params }: { params: Promise
                                 />
                                 <DetailRow
                                     icon={<Calendar size={16} />}
-                                    label="Target Scrap Date"
+                                    label={equipment.isScrapped ? "Scrapped Date" : "Target Scrap Date"}
                                     value={equipment.scrapDate ? new Date(equipment.scrapDate).toLocaleDateString() : "-"}
+                                    valueClassName={equipment.isScrapped ? "text-red-600 font-bold" : ""}
                                 />
                             </div>
                         </div>

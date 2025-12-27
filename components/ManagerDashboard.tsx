@@ -229,8 +229,13 @@ export default function ManagerDashboard({ requests, stats }: { requests: any[],
                                                 <span className="font-medium text-foreground group-hover:text-primary transition-colors">
                                                     {request.subject}
                                                 </span>
-                                                <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
                                                     <span className="truncate max-w-[150px]">{request.equipment?.name || "No Equipment"}</span>
+                                                    {request.equipment?.isScrapped && (
+                                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/10 text-red-600 border border-red-200/50 uppercase tracking-tighter">
+                                                            SCRAPPED
+                                                        </span>
+                                                    )}
                                                     <span className="text-border">•</span>
                                                     <span className="text-muted-foreground/70">{request.company?.name || "Internal"}</span>
                                                 </span>

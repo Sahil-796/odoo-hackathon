@@ -119,9 +119,16 @@ export default async function EquipmentsPage({ searchParams }: { searchParams: P
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-500/10 text-blue-600 border border-blue-200/50">
-                                                    {eq.category}
-                                                </span>
+                                                <div className="flex gap-2">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-500/10 text-blue-600 border border-blue-200/50">
+                                                        {eq.category}
+                                                    </span>
+                                                    {eq.isScrapped && (
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-red-500/10 text-red-600 border border-red-200/50">
+                                                            SCRAPPED
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 {eq.team ? (
@@ -144,7 +151,9 @@ export default async function EquipmentsPage({ searchParams }: { searchParams: P
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {eq.employee ? (
+                                                {eq.isScrapped ? (
+                                                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Scrapped</span>
+                                                ) : eq.employee ? (
                                                     <div className="flex items-center gap-2 text-sm text-foreground/80">
                                                         <Users className="w-3.5 h-3.5 text-muted-foreground opacity-70" />
                                                         {eq.employee.name}

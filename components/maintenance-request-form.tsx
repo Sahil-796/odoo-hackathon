@@ -249,19 +249,26 @@ export default function MaintenanceRequestForm({
                             </div>
 
                             {formData.maintenanceScope === "equipment" && (
-                                <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                    <label className="text-sm font-semibold text-muted-foreground">Equipment</label>
-                                    <select
-                                        name="equipmentId"
-                                        value={formData.equipmentId}
-                                        onChange={handleChange}
-                                        className="w-full bg-background border-b border-border focus:border-primary px-0 py-1 text-foreground outline-none transition-colors"
-                                    >
-                                        <option value="">Select Equipment</option>
-                                        {equipments.map(e => (
-                                            <option key={e.id} value={e.id}>{e.name} ({e.serialNumber})</option>
-                                        ))}
-                                    </select>
+                                <div className="grid grid-cols-[140px_1fr] items-start gap-4">
+                                    <label className="text-sm font-semibold text-muted-foreground pt-1.5">Equipment</label>
+                                    <div className="flex flex-col gap-1 w-full">
+                                        <select
+                                            name="equipmentId"
+                                            value={formData.equipmentId}
+                                            onChange={handleChange}
+                                            className="w-full bg-background border-b border-border focus:border-primary px-0 py-1 text-foreground outline-none transition-colors"
+                                        >
+                                            <option value="">Select Equipment</option>
+                                            {equipments.map(e => (
+                                                <option key={e.id} value={e.id}>{e.name} ({e.serialNumber})</option>
+                                            ))}
+                                        </select>
+                                        {equipments.find(e => e.id === parseInt(formData.equipmentId || "0"))?.isScrapped && (
+                                            <span className="text-xs font-bold text-red-600 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded border border-red-200 dark:border-red-800 w-fit">
+                                                ⚠ This equipment is SCRAPPED
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 

@@ -136,8 +136,8 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                                                     </span>
                                                     {req.priority && (req.priority > 0) && (
                                                         <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${req.priority === 3 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                                                                req.priority === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
-                                                                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                                            req.priority === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
+                                                                'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                                                             }`}>
                                                             {['Low', 'Medium', 'High', 'Urgent'][req.priority]} Priority
                                                         </span>
@@ -146,9 +146,16 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                                             </td>
                                             <td className="px-6 py-4">
                                                 {req.equipment ? (
-                                                    <Link href={`/equipments/${req.equipment.id}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group/eq">
-                                                        <span className="font-medium">{req.equipment.name}</span>
-                                                    </Link>
+                                                    <div className="flex flex-col gap-1 items-start">
+                                                        <Link href={`/equipments/${req.equipment.id}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group/eq">
+                                                            <span className="font-medium">{req.equipment.name}</span>
+                                                        </Link>
+                                                        {req.equipment.isScrapped && (
+                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-600 border border-red-200/50 uppercase tracking-wider">
+                                                                Scrapped
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 ) : (
                                                     <span className="text-muted-foreground italic">-</span>
                                                 )}

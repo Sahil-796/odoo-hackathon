@@ -26,6 +26,7 @@ type Request = {
     } | null;
     equipment: {
         name: string;
+        isScrapped?: boolean;
     } | null;
     requestDate: string; // ISO string from DB
 };
@@ -82,10 +83,10 @@ export default function TechnicianDashboard({ requests: initialRequests }: { req
         setRequests(updatedRequests);
 
         try {
-            const res = await fetch("/api/maintenance-requests", {
-                method: "PUT",
+            const res = await fetch(`/api/maintenance-requests/${draggedRequestId}`, {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: draggedRequestId, stage: targetStage }),
+                body: JSON.stringify({ stage: targetStage }),
             });
 
             if (!res.ok) {
@@ -177,6 +178,15 @@ export default function TechnicianDashboard({ requests: initialRequests }: { req
                                                     <div className="mb-3">
                                                         <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-500/10 border border-red-500/10 px-2 py-0.5 rounded-sm">
                                                             <AlertTriangle className="w-3 h-3" /> High Priority
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {/* Scrapped Equipment Badge */}
+                                                {request.equipment?.isScrapped && (
+                                                    <div className="mb-3">
+                                                        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-destructive bg-destructive/10 border border-destructive/10 px-2 py-0.5 rounded-sm">
+                                                            <Trash2 className="w-3 h-3" /> Equipment Scrapped
                                                         </span>
                                                     </div>
                                                 )}
