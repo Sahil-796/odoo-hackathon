@@ -11,8 +11,8 @@ export async function GET(request: Request) {
                 equipment: true,
                 technician: true,
                 company: true,
-                workCenter: true
-                // team relation is not defined in requestsRelations in schema, skipping for now to fix lint
+                workCenter: true,
+                team: true
             },
             orderBy: (requests, { desc }) => [desc(requests.createdAt)],
         });

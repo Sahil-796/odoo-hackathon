@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
     BarChart3,
     Clock,
@@ -17,72 +17,91 @@ import {
 
 export default function ManagerDashboard({ requests }: { requests: any[] }) {
 
-    // Calculate specific KPIs based on real data
+    const [activeTab, setActiveTab] = useState<"category" | "team">("category");
 
+    const chartData = useMemo(() => {
+        const counts = requests.reduce((acc, r) => {
+            const key = activeTab === "category"
+                ? (r.equipment?.category || "Uncategorized")
+                : (r.team?.name || "Unassigned");
+            acc[key] = (acc[key] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
+        return Object.entries(counts)
+            .sort(([, a], [, b]) => (b as number) - (a as number))
+            .map(([label, count]) => ({ label, count: count as number }));
+    }, [requests, activeTab]);
 
     return (
         <div className="space-y-6 p-6">
 
-            {/* Stats Grid */}
-            {/* Dashboard Graph: Requests per Equipment Category */}
+            {/* Dashboard Graph */}
             <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-foreground mb-6">
-                    Requests per Equipment Category
-                </h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <h3 className="text-lg font-semibold text-foreground">
+                        Requests per {activeTab === "category" ? "Equipment Category" : "Team"}
+                    </h3>
 
-                {Object.keys(requests.reduce((acc, r) => {
-                    const cat = r.equipment?.category || "Uncategorized";
-                    acc[cat] = (acc[cat] || 0) + 1;
-                    return acc;
-                }, {} as Record<string, number>)).length === 0 ? (
+                    <div className="flex p-1 bg-muted rounded-lg w-fit">
+                        <button
+                            onClick={() => setActiveTab("category")}
+                            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "category"
+                                    ? "bg-background text-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground"
+                                }`}
+                        >
+                            Category
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("team")}
+                            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "team"
+                                    ? "bg-background text-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground"
+                                }`}
+                        >
+                            Team
+                        </button>
+                    </div>
+                </div>
+
+                {chartData.length === 0 ? (
                     <div className="h-48 flex items-center justify-center text-muted-foreground border border-dashed border-border rounded-lg">
                         No data available to chart.
                     </div>
                 ) : (
                     <div className="flex items-end gap-8 px-4 pb-2">
-                        {Object.entries(requests.reduce((acc, r) => {
-                            const cat = r.equipment?.category || "Uncategorized";
-                            acc[cat] = (acc[cat] || 0) + 1;
-                            return acc;
-                        }, {} as Record<string, number>))
-                            .sort(([, a], [, b]) => (b as number) - (a as number)) // Sort descending
-                            .map(([category, count], idx) => {
-                                const countNum = count as number;
-                                // Find max for scaling
-                                const max = Math.max(...Object.values(requests.reduce((acc, r) => {
-                                    const cat = r.equipment?.category || "Uncategorized";
-                                    acc[cat] = (acc[cat] || 0) + 1;
-                                    return acc;
-                                }, {} as Record<string, number>)) as number[]);
+                        {chartData.map(({ label, count }, idx) => {
+                            // Find max for scaling
+                            const max = Math.max(...chartData.map(d => d.count));
+                            const heightPercentage = max > 0 ? (count / max) * 100 : 0;
+                            const colors = ["bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-red-500", "bg-purple-500"];
 
-                                const heightPercentage = max > 0 ? (countNum / max) * 100 : 0;
-                                const colors = ["bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-red-500", "bg-purple-500"];
+                            return (
+                                <div key={label} className="flex-1 flex flex-col items-center gap-2 group">
+                                    <div className="h-48 w-full flex items-end justify-center relative">
+                                        {/* Background Track */}
+                                        <div className="absolute inset-0 bg-muted/20 rounded-t-lg" />
 
-                                return (
-                                    <div key={category} className="flex-1 flex flex-col items-center gap-2 group">
-                                        <div className="h-48 w-full flex items-end justify-center relative">
-                                            {/* Background Track (optional) */}
-                                            <div className="absolute inset-0 bg-muted/20 rounded-t-lg" />
-
-                                            <div
-                                                style={{ height: `${heightPercentage}%` }}
-                                                className={`w-full max-w-[60px] rounded-t-lg ${colors[idx % colors.length]} opacity-80 group-hover:opacity-100 transition-all duration-300 relative`}
-                                            >
-                                                {/* Tooltip */}
-                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-md whitespace-nowrap z-10 pointer-events-none">
-                                                    {countNum} Requests
-                                                </div>
+                                        <div
+                                            style={{ height: `${heightPercentage}%` }}
+                                            className={`w-full max-w-[60px] rounded-t-lg ${colors[idx % colors.length]} opacity-80 group-hover:opacity-100 transition-all duration-300 relative`}
+                                        >
+                                            {/* Tooltip */}
+                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-md whitespace-nowrap z-10 pointer-events-none">
+                                                {count} Requests
                                             </div>
                                         </div>
-                                        <div className="text-center h-10">
-                                            <span className="block text-sm font-medium text-foreground truncate max-w-[100px]" title={category}>
-                                                {category}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground">{countNum}</span>
-                                        </div>
                                     </div>
-                                );
-                            })}
+                                    <div className="text-center h-10">
+                                        <span className="block text-sm font-medium text-foreground truncate max-w-[100px]" title={label}>
+                                            {label}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">{count}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
