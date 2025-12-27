@@ -75,6 +75,13 @@ export default async function MaintenanceRequestsPage({ searchParams }: { search
                             </div>
                         )}
                     </div>
+                    <Link
+                        href={`/maintenance-requests/new${equipmentId ? `?equipmentId=${equipmentId}` : ""}`}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-semibold text-sm transition-colors shadow-lg shadow-primary/5 flex items-center gap-2"
+                    >
+                        <Wrench size={16} />
+                        New Request
+                    </Link>
                 </div>
 
                 {/* List */}
