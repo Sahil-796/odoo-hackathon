@@ -7,7 +7,11 @@ export async function GET(request: Request) {
         // Fetch all maintenance requests with relations
         const requests = await db.query.maintenanceRequests.findMany({
             with: {
-                equipment: true,
+                equipment: {
+                    with: {
+                        employee: true
+                    }
+                },
                 technician: true,
                 company: true,
                 workCenter: true,

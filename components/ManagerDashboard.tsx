@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import {
     Search,
     Filter,
-    MoreVertical,
     AlertCircle
 } from "lucide-react";
 
@@ -18,6 +17,16 @@ interface DashboardStats {
 export default function ManagerDashboard({ requests, stats }: { requests: any[], stats: DashboardStats }) {
 
     const [activeTab, setActiveTab] = useState<"category" | "team">("category");
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredRequests = requests.filter(r => {
+        const query = searchQuery.toLowerCase();
+        return (
+            r.subject?.toLowerCase().includes(query) ||
+            r.equipment?.name?.toLowerCase().includes(query) ||
+            r.technician?.name?.toLowerCase().includes(query)
+        );
+    });
 
     const chartData = useMemo(() => {
         const counts = requests.reduce((acc, r) => {
@@ -115,13 +124,15 @@ export default function ManagerDashboard({ requests, stats }: { requests: any[],
                         <h2 className="text-lg font-semibold text-foreground">
                             Recent Requests
                         </h2>
-                        <div className="flex gap-2">
-                            <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors">
-                                <Search className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors">
-                                <Filter className="w-4 h-4" />
-                            </button>
+                        <div className="relative w-64">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <input
+                                type="text"
+                                placeholder="Search requests..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                            />
                         </div>
                     </div>
                     <div className="p-6 overflow-x-auto">
@@ -129,14 +140,15 @@ export default function ManagerDashboard({ requests, stats }: { requests: any[],
                             <thead className="text-muted-foreground font-medium border-b border-border">
                                 <tr className="text-muted-foreground font-medium border-b border-border">
                                     <th className="pb-3 pl-2">Request</th>
+                                    <th className="pb-3">Company</th>
+                                    <th className="pb-3">Employee</th>
                                     <th className="pb-3">Status</th>
                                     <th className="pb-3">Priority</th>
                                     <th className="pb-3">Technician</th>
-                                    <th className="pb-3 text-right pr-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
-                                {requests.slice(0, 5).map((request) => (
+                                {filteredRequests.slice(0, 5).map((request) => (
                                     <tr key={request.id} className="group hover:bg-muted/30 transition-colors">
                                         <td className="py-4 pl-2">
                                             <div className="flex flex-col">
@@ -145,6 +157,21 @@ export default function ManagerDashboard({ requests, stats }: { requests: any[],
                                                 </span>
                                                 <span className="text-xs text-muted-foreground">
                                                     {request.equipment?.name || "No Equipment"}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="py-4">
+                                            <span className="text-sm text-muted-foreground">
+                                                {request.company?.name || "Internal"}
+                                            </span>
+                                        </td>
+                                        <td className="py-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-full bg-secondary/50 flex items-center justify-center text-xs font-medium text-secondary-foreground">
+                                                    {request.equipment?.employee?.name?.[0] || "?"}
+                                                </div>
+                                                <span className="text-sm text-muted-foreground">
+                                                    {request.equipment?.employee?.name || "Unassigned"}
                                                 </span>
                                             </div>
                                         </td>
@@ -180,17 +207,12 @@ export default function ManagerDashboard({ requests, stats }: { requests: any[],
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-4 text-right pr-2">
-                                            <button className="p-1 hover:bg-muted rounded text-muted-foreground transition-colors">
-                                                <MoreVertical className="w-4 h-4" />
-                                            </button>
-                                        </td>
                                     </tr>
                                 ))}
-                                {requests.length === 0 && (
+                                {filteredRequests.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="py-8 text-center text-muted-foreground">
-                                            No requests found.
+                                        <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                                            {searchQuery ? "No matching requests found." : "No requests found."}
                                         </td>
                                     </tr>
                                 )}
