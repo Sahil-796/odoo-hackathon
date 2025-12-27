@@ -115,7 +115,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                     {/* Left Column */}
                                     <div className="space-y-4">
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="name" className="text-sm font-semibold text-muted-foreground">Name?</label>
+                                            <label htmlFor="name" className="text-sm font-semibold text-muted-foreground">Name</label>
                                             <input
                                                 type="text"
                                                 id="name"
@@ -127,7 +127,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="category" className="text-sm font-semibold text-muted-foreground">Equipment Category?</label>
+                                            <label htmlFor="category" className="text-sm font-semibold text-muted-foreground">Equipment Category</label>
                                             <input
                                                 type="text"
                                                 id="category"
@@ -139,12 +139,12 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label className="text-sm font-semibold text-muted-foreground">Company?</label>
+                                            <label className="text-sm font-semibold text-muted-foreground">Company</label>
                                             <div className="text-sm text-foreground py-1">{companyName}</div>
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="usedBy" className="text-sm font-semibold text-muted-foreground">Used By?</label>
+                                            <label htmlFor="usedBy" className="text-sm font-semibold text-muted-foreground">Used By</label>
                                             <select
                                                 id="usedBy"
                                                 name="usedBy"
@@ -158,7 +158,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="maintenanceTeamId" className="text-sm font-semibold text-muted-foreground">Maintenance Team?</label>
+                                            <label htmlFor="maintenanceTeamId" className="text-sm font-semibold text-muted-foreground">Maintenance Team</label>
                                             <select
                                                 id="maintenanceTeamId"
                                                 name="maintenanceTeamId"
@@ -173,7 +173,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="assignedDate" className="text-sm font-semibold text-muted-foreground">Assigned Date?</label>
+                                            <label htmlFor="assignedDate" className="text-sm font-semibold text-muted-foreground">Assigned Date</label>
                                             <input
                                                 type="date"
                                                 id="assignedDate"
@@ -186,7 +186,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                     {/* Right Column */}
                                     <div className="space-y-4">
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="technicianId" className="text-sm font-semibold text-muted-foreground">Technician?</label>
+                                            <label htmlFor="technicianId" className="text-sm font-semibold text-muted-foreground">Technician</label>
                                             <select
                                                 id="technicianId"
                                                 name="technicianId"
@@ -200,7 +200,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="employeeId" className="text-sm font-semibold text-muted-foreground">Employee?</label>
+                                            <label htmlFor="employeeId" className="text-sm font-semibold text-muted-foreground">Employee</label>
                                             <select
                                                 id="employeeId"
                                                 name="employeeId"
@@ -214,7 +214,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="scrapDate" className="text-sm font-semibold text-muted-foreground">Scrap Date?</label>
+                                            <label htmlFor="scrapDate" className="text-sm font-semibold text-muted-foreground">Scrap Date</label>
                                             <input
                                                 type="date"
                                                 id="scrapDate"
@@ -224,7 +224,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="location" className="text-sm font-semibold text-muted-foreground">Used in location?</label>
+                                            <label htmlFor="location" className="text-sm font-semibold text-muted-foreground">Used in location</label>
                                             <input
                                                 type="text"
                                                 id="location"
@@ -234,7 +234,7 @@ export default function CreateEquipmentModal({ teams, users, workCenters, compan
                                         </div>
 
                                         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-                                            <label htmlFor="workCenter" className="text-sm font-semibold text-muted-foreground">Work Center?</label>
+                                            <label htmlFor="workCenter" className="text-sm font-semibold text-muted-foreground">Work Center</label>
                                             <input
                                                 list="workCenters"
                                                 id="workCenter"
