@@ -177,5 +177,9 @@ export const requestsRelations = relations(maintenanceRequests, ({ one }) => ({
     fields: [maintenanceRequests.workCenterId],
     references: [workCenters.id],
   }),
+  team: one(teams, {
+    fields: [maintenanceRequests.teamId],
+    references: [teams.id],
+  }),
 }));
 

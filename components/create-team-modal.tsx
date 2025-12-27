@@ -24,7 +24,7 @@ export default function CreateTeamModal({ companyId, companyName }: { companyId:
         const name = formData.get("name") as string;
 
         try {
-            const res = await fetch("/api/createTeam", {
+            const res = await fetch("/api/teams", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, companyId }),
