@@ -64,7 +64,7 @@ export default function Navbar({ user }: NavbarProps) {
                                 <Monitor size={16} />
                                 <span className="hidden lg:inline">Equipments</span>
                             </Link>
-                            <Link href="/reporting" className={`${linkBaseClass} ${pathname === '/reporting' ? activeClass : inactiveClass}`} title="Reporting">
+                            <Link href="/reports" className={`${linkBaseClass} ${pathname === '/reports' ? activeClass : inactiveClass}`} title="Reporting">
                                 <BarChart3 size={16} />
                                 <span className="hidden lg:inline">Reports</span>
                             </Link>
