@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, boolean, integer, pgEnum, doublePrecision, date, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // --- ENUMS (Strictly defined from Source 27-29, 55) ---
@@ -44,6 +44,12 @@ export const workCenters = pgTable("work_centers", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   code: text("code"),
+  tag: text("tag"),
+  costperhour: doublePrecision("cost_per_hour"),
+  capacity: doublePrecision("capacity"),
+  timeEfficiency: doublePrecision("time_efficiency"),
+  oeeTarget: doublePrecision("oee_target"),
+  alternativeWorkCenterId: integer("alternative_work_center_id").references((): AnyPgColumn => workCenters.id),
 });
 
 // --- 3. EQUIPMENT (Source 7-18) ---
