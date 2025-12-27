@@ -13,7 +13,7 @@ export default function Navbar() {
 
     return (
         <nav className="flex items-center gap-6 px-6 py-3 border-b border-border text-sm font-medium text-muted-foreground bg-background">
-            <div className="text-foreground font-bold text-lg mr-4">Maintenance</div>
+            <div className="text-foreground font-bold text-lg mr-4">Charlie Kirk</div>
             <Link href="/dashboard" className={`${isActive('/dashboard')} transition-colors`}>
                 Dashboard
             </Link>
