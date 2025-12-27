@@ -33,65 +33,67 @@ export default async function TeamsPage() {
     const allCompanies = await getCompanies();
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Teams</h1>
-                <CreateTeamModal companies={allCompanies} />
-            </div>
+        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+            <main className="p-6">
+                <div className="flex items-center justify-between gap-4 mb-8">
+                    <h1 className="text-2xl font-bold">Teams</h1>
+                    <CreateTeamModal companies={allCompanies} />
+                </div>
 
-            <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-b bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-900">Team Name</th>
-                                <th className="px-6 py-4 font-semibold text-gray-900">Team Members</th>
-                                <th className="px-6 py-4 font-semibold text-gray-900">Company</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {allTeams.length === 0 ? (
+                <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xl">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-muted-foreground">
+                            <thead className="bg-muted/50 text-foreground uppercase text-xs tracking-wider font-semibold">
                                 <tr>
-                                    <td colSpan={3} className="px-6 py-8 text-center text-gray-500">
-                                        No teams found. Create one to get started.
-                                    </td>
+                                    <th className="px-6 py-4 border-b border-border">Team Name</th>
+                                    <th className="px-6 py-4 border-b border-border">Team Members</th>
+                                    <th className="px-6 py-4 border-b border-border">Company</th>
                                 </tr>
-                            ) : (
-                                allTeams.map((team) => (
-                                    <tr key={team.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-gray-900">{team.name}</td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {team.users.length > 0 ? (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {team.users.map((user) => (
-                                                        <span
-                                                            key={user.id}
-                                                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10"
-                                                        >
-                                                            {user.name}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <span className="text-gray-400 italic">No members</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {team.company ? (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-medium">{team.company.name}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-gray-400">-</span>
-                                            )}
+                            </thead>
+                            <tbody className="divide-y divide-border">
+                                {allTeams.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="px-6 py-8 text-center text-muted-foreground">
+                                            No teams found. Create one to get started.
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : (
+                                    allTeams.map((team) => (
+                                        <tr key={team.id} className="hover:bg-muted/30 transition-colors group">
+                                            <td className="px-6 py-4 font-medium text-foreground">{team.name}</td>
+                                            <td className="px-6 py-4">
+                                                {team.users.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {team.users.map((user) => (
+                                                            <span
+                                                                key={user.id}
+                                                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary ring-1 ring-inset ring-primary/20"
+                                                            >
+                                                                {user.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-muted-foreground italic">No members</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {team.company ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium text-foreground">{team.company.name}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-muted-foreground">-</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

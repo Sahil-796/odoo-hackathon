@@ -29,7 +29,7 @@ export default function Navbar() {
             <Link href="#" className="hover:text-primary transition-colors">
                 Reporting
             </Link>
-            <Link href="#" className="hover:text-primary transition-colors">
+            <Link href="/teams" className={`${isActive('/teams')} transition-colors`}>
                 Teams
             </Link>
         </nav>
